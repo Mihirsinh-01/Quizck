@@ -4,7 +4,7 @@ from django.db import models
 
 class Quiz(models.Model):
     hostname=models.CharField(max_length=15)
-    quizId=models.CharField(max_length=100)
+    quizId=models.IntegerField()
     questionNumber=models.IntegerField()
     question=models.CharField(max_length=500)
     option1=models.CharField(max_length=100)

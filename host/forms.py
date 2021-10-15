@@ -1,12 +1,10 @@
 from django import forms
-from django.forms import fields
-from django.forms.widgets import EmailInput
 from .models import Quiz
 
 class createQuizForm(forms.ModelForm):
-  CHOICES=[1,2,3,4]
+  CHOICES=(('1','1'),('2','2'),('3','3'),('4','4'))
   
-  questionNumber=forms.IntegerField()
+  question_Number=forms.IntegerField()
   question=forms.CharField(max_length=500)
   option1=forms.CharField(max_length=100)
   option2=forms.CharField(max_length=100)
@@ -17,4 +15,4 @@ class createQuizForm(forms.ModelForm):
   timer=forms.IntegerField()
   class Meta:
     model = Quiz
-    fields=['question','option1','option2','option3','option4','answer','marks','timer']
+    fields=['question_Number','question','option1','option2','option3','option4','answer','marks','timer']

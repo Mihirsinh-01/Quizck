@@ -1,0 +1,17 @@
+{% load crispy_forms_tags %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <p>
+        {{ field.label_tag }}<br>
+        {{ field }}
+        {% if field.help_text %}
+        <small style="color: grey">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+        <p style="color: red">{{ error }}</p>
+        {% endfor %}
+    </p>
+    <input type="submit" value="Next Question" formaction="createQuiz">
+    <input type="submit" value="Done" formaction="done">
+</form>

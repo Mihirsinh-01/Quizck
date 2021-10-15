@@ -1,7 +1,20 @@
-<form action="" method="POST">
+<form action="../quiz" method="POST">
   {% csrf_token %}
   <input type="submit" value="Create Quiz"/>
 </form>
-{% for player in players %}
-<b>player</b>
+
+{% for quiz1,quiz2 in quizzes %}
+<button type="submit" onclick="quiz('{{quiz2}}')">{{ quiz1 }}</a></button>
 {% endfor %}
+<br>
+
+{% for player in players %}
+<b>{{ player }}</b>
+{% endfor %}
+
+
+<script>
+    function quiz(id){
+        window.location = "{% url 'quizPage' 1234 %}".replace(/1234/, id.toString());
+    }
+</script>
