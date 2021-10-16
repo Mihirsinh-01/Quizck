@@ -6,24 +6,33 @@ from .models import Quiz
 from django.http import HttpResponse
 import pyrebase
 import json
+import shortuuid
 
-# Create your views here.
+firebaseConfig = {
+    "apiKey": "AIzaSyDNn1-wkMm-g0cH2BKQ6XjdLTl6ldds8ZE",
+    "authDomain": "quizck-74e04.firebaseapp.com",
+    "projectId": "quizck-74e04",
+    "storageBucket": "quizck-74e04.appspot.com",
+    "messagingSenderId": "555502389734",
+    "appId": "1:555502389734:web:2a977e89e54df3c69cae27",
+    "measurementId": "G-XFLZV89Q56",
+    "databaseURL":"https://quizck-74e04-default-rtdb.firebaseio.com/"
+  };
+firebase=pyrebase.initialize_app(firebaseConfig)
+db=firebase.database()
+
+
+
 def dashboard(req):
-  players=Player.objects.filter(banned=False).values_list('username',flat=True)
-  alll=[]
-
-  for player in players:
-    alll.append(player)
-
+  
   username=req.session['username']
   quiz=Quiz.objects.filter(hostname=username).values_list('quizId',flat=True).distinct()
   quizzes=[]
-
   i=1
   for x in quiz:
     quizzes.append([i,x])
     i+=1
-  return render(req,'dashboard.html',{'players':alll,'quizzes':quizzes})
+  return render(req,'dashboard.html',{'quizzes':quizzes})
 
 
 def quiz(req):
@@ -90,35 +99,38 @@ def done(req):
 
 def quizPage(req,**primarykey):
   x=primarykey['pk']
-  # print(x)
   qz=Quiz.objects.filter(quizId=x,hostname=req.session["username"])
   qz=serializers.serialize('json',qz)
   qz=json.loads(qz)
-  # print(qz)
-  # print("Done")
-  return render(req,'quizPage.html',{"sec":105,"query":qz})
-  # return HttpResponse("radhe radhe")
+  print(type(qz))
+  print(qz)
+  print("Done")  
+  code = shortuuid.ShortUUID().random(length=4)
+  db.child("games").child(code).set({'host':req.session["username"],'next':0})
+  req.session["code"]=code
+
+
+  return render(req,'quizPage.html',{"sec":105,"query":qz,"code":code})
 
 def strm(message):
   print(message)
   print("Data Changed")
 
 def fbase(req):
-  firebaseConfig = {
-    "apiKey": "AIzaSyDNn1-wkMm-g0cH2BKQ6XjdLTl6ldds8ZE",
-    "authDomain": "quizck-74e04.firebaseapp.com",
-    "projectId": "quizck-74e04",
-    "storageBucket": "quizck-74e04.appspot.com",
-    "messagingSenderId": "555502389734",
-    "appId": "1:555502389734:web:2a977e89e54df3c69cae27",
-    "measurementId": "G-XFLZV89Q56",
-    "databaseURL":"https://quizck-74e04-default-rtdb.firebaseio.com/"
-  };
-  firebase=pyrebase.initialize_app(firebaseConfig)
-  db=firebase.database()
+  
   db.child("Custom Key").stream(strm)
   db.child("Custom Key").set({"name":"Mihir","surname":"Vaja"})
   return HttpResponse("<b>Data Pushed in Firebase</b>")
 
 def tryy(req):
   return render(req,'temp.html')
+
+def waiting(req):
+  qz=req.session["code"]
+  players=Player.objects.filter(banned=False,gameId=qz).values_list('username',flat=True)
+  alll=[]
+
+  for player in players:
+    alll.append(player)
+
+  return render(req,'waiting.html',{'players':alll,'code':req.session["code"]})

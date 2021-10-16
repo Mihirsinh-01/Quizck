@@ -19,10 +19,12 @@
         {% endfor %}
         <input type="submit" value="Done">
       </form>
+      <br>
+      {{code}}
       <div id="stopwatch">       
       </div>
       <button onclick="timerCycle()">Click</button>
-      
+      <button onclick="play()">Play</button>
     </body>
 </html>
 
@@ -40,4 +42,8 @@
       timer.innerHTML = x;
       if(sec!=0) setTimeout("timerCycle()", 1000);
   }
+  function play(){
+    window.location="{% url 'waiting' %}";
+  }
+  
 </script>
