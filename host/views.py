@@ -1,7 +1,11 @@
 from django.shortcuts import render,redirect
+from django.core import serializers
 from player.models import Player
 from .forms import createQuizForm
 from .models import Quiz
+from django.http import HttpResponse
+import pyrebase
+import json
 
 # Create your views here.
 def dashboard(req):
@@ -33,11 +37,10 @@ def quiz(req):
 
 
 def createQuiz(req):
-  print("Inside Create Quiz")
   if req.method == 'POST':
       form = createQuizForm(req.POST)
       if form.is_valid():
-        questionNumber=req.POST['questionNumber']
+        questionNumber=req.POST['question_Number']
         question=req.POST['question']
         option1=req.POST['option1']
         option2=req.POST['option2']
@@ -64,7 +67,7 @@ def done(req):
   if req.method == 'POST':
       form = createQuizForm(req.POST)
       if form.is_valid():
-        questionNumber=req.POST['questionNumber']
+        questionNumber=req.POST['question_Number']
         question=req.POST['question']
         option1=req.POST['option1']
         option2=req.POST['option2']
@@ -85,5 +88,37 @@ def done(req):
   return redirect('dashboard')
 
 
-def quizPage(req):
-  
+def quizPage(req,**primarykey):
+  x=primarykey['pk']
+  # print(x)
+  qz=Quiz.objects.filter(quizId=x,hostname=req.session["username"])
+  qz=serializers.serialize('json',qz)
+  qz=json.loads(qz)
+  # print(qz)
+  # print("Done")
+  return render(req,'quizPage.html',{"sec":105,"query":qz})
+  # return HttpResponse("radhe radhe")
+
+def strm(message):
+  print(message)
+  print("Data Changed")
+
+def fbase(req):
+  firebaseConfig = {
+    "apiKey": "AIzaSyDNn1-wkMm-g0cH2BKQ6XjdLTl6ldds8ZE",
+    "authDomain": "quizck-74e04.firebaseapp.com",
+    "projectId": "quizck-74e04",
+    "storageBucket": "quizck-74e04.appspot.com",
+    "messagingSenderId": "555502389734",
+    "appId": "1:555502389734:web:2a977e89e54df3c69cae27",
+    "measurementId": "G-XFLZV89Q56",
+    "databaseURL":"https://quizck-74e04-default-rtdb.firebaseio.com/"
+  };
+  firebase=pyrebase.initialize_app(firebaseConfig)
+  db=firebase.database()
+  db.child("Custom Key").stream(strm)
+  db.child("Custom Key").set({"name":"Mihir","surname":"Vaja"})
+  return HttpResponse("<b>Data Pushed in Firebase</b>")
+
+def tryy(req):
+  return render(req,'temp.html')

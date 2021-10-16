@@ -1,1 +1,43 @@
-ojnh
+<html>
+    <head>
+        <title>JavaScript</title> 
+    </head>
+    <body>
+      <form action="../tryy" method="POST">
+        {% csrf_token %}
+        {% for q in query %}
+        <br>
+        Question{{q.fields.questionNumber}}:&nbsp
+        {{q.fields.question}}<br>
+        1){{q.fields.option1}}
+        2){{q.fields.option2}}
+        3){{q.fields.option3}}
+        4){{q.fields.option4}}<br>
+        Marks:{{q.fields.marks}}<br>
+        Time:{{q.fields.timer}}
+        <br><hr>
+        {% endfor %}
+        <input type="submit" value="Done">
+      </form>
+      <div id="stopwatch">       
+      </div>
+      <button onclick="timerCycle()">Click</button>
+      
+    </body>
+</html>
+
+<script>
+  var sec = {{sec}};
+  const timer = document.getElementById('stopwatch');
+  function timerCycle() {
+
+      sec=sec-1;
+      if(sec<0) return;
+      var x=sec;
+      if (x < 10 || x == 0) {
+        x='0'+x;
+      }
+      timer.innerHTML = x;
+      if(sec!=0) setTimeout("timerCycle()", 1000);
+  }
+</script>
