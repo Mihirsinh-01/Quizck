@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .models import Player
 from host.models import Quiz
 from .forms import playerForm
 from django.http import HttpResponse
-import pyrebase
+from firebase import firebase
 
 
 firebaseConfig = {
@@ -16,8 +16,10 @@ firebaseConfig = {
     "measurementId": "G-XFLZV89Q56",
     "databaseURL":"https://quizck-74e04-default-rtdb.firebaseio.com/"
   };
-firebase=pyrebase.initialize_app(firebaseConfig)
-db=firebase.database()
+firebase = firebase.FirebaseApplication('https://quizck-74e04-default-rtdb.firebaseio.com/', None)
+# firebase=pyrebase.initialize_app(firebaseConfig)
+# db=firebase.database()
+db=firebase
 
 
 def joinplayer(request):
@@ -31,12 +33,19 @@ def joinplayer(request):
         re=list(db.child("games").shallow().get().val())
         if gameid in re:
           print("Yes Game Exists")
+          playerLogin=Player(gameId=gameid,username=username)
+          playerLogin.save()
+          request.session["code"]=gameid
+          nwplyr=db.child("games").child(gameid).child("newplayer").get().val()
+          nwplyr^=1
+          db.child("games").child(gameid).child("newplayer").set(nwplyr)
+          print(nwplyr)
+          return redirect('waiting')
         else:
           print("No game with such ID")
+          return HttpResponse('No game with such ID')
         print(re)
-        playerLogin=Player(gameId=gameid,username=username)
-        playerLogin.save()
-        return HttpResponse('/thanks/')
+        
   else:
       form = playerForm()
 

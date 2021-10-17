@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
+from django.contrib.auth import login, authenticate
 from .forms import signupForm,loginForm
 from .models import Login
 from django.views.decorators.csrf import csrf_exempt
@@ -10,7 +11,6 @@ def signup(request):
   if request.method == 'POST':
       form = signupForm(request.POST)
       if form.is_valid():
-        # print("hii")
         username=request.POST['username']
         password=request.POST['password']
         emailId=request.POST['emailId']
@@ -19,7 +19,6 @@ def signup(request):
         if checking.exists():
           return render(request, 'signup.html', {'form': form})
         userLogin=Login(username=username,password=password,emailId=emailId)
-
         userLogin.save()
 
         
@@ -33,7 +32,6 @@ def login(request):
   if request.method == 'POST':
       form = loginForm(request.POST)
       if form.is_valid():
-        # print("hii")
         username=request.POST['username']
         password=request.POST['password']
         
@@ -44,8 +42,6 @@ def login(request):
         else:
           messages.error(request,'Enter valid data')
 
-        
-        # return HttpResponse('/thanks/')
   else:
       form = loginForm()
 
