@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'login',
     'player',
     'host',
-    'crispy_forms'
 ]
 
 MIDDLEWARE = [

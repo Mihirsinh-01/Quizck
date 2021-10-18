@@ -141,7 +141,7 @@ def quizPage(req, **primarykey):
     dbRef.child("games").child(code).set({
       'host': req.session["username"],
       'next': 0,
-      'newplayer': 0
+      'newplayer': [''],
     })
 
     return render(req, 'quizPage.html', {
@@ -171,13 +171,15 @@ def strm(message):
   
   print('center of strm function')
   print()
-  return HttpResponse('<script>window.location="{% url \'waiting\' %}";</script>')
-  return render(globReq, "waiting.html", {'players':alll,'code': globReq.session['code']})
+  # return render(globReq,'waiting.html',{'players': alll,'code': globReq.session["code"]})
+  return redirect('fbase')
   print('end of strm function')
 
 
 def fbase(req):
-  return HttpResponse("<b>Data Pushed in Firebase</b>")
+  return HttpResponse('<script>window.location="waiting.html";</script>')
+  # return HttpResponse("<b>Data Pushed in Firebase</b>")
+  
 
 
 def tryy(req):
@@ -200,9 +202,6 @@ def waiting(req):
     globReq = req
     path='games/'+qz
     db.reference(path).listen(strm)
-    nw=db.reference(path).get_if_changed("dhvanik")
-    print("New")
-    print(nw)
     print("After STRM")
 
     for player in players:
@@ -214,7 +213,4 @@ def waiting(req):
         'players': alll,
         'code': req.session["code"]
     })
-
-
-# https://replit.com/@MIHIRSINHVAJA/Quizck#host/templates/firebasejson.json
 

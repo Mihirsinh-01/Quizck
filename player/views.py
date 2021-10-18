@@ -53,7 +53,10 @@ def joinplayer(request):
           playerLogin.save()
           request.session["code"]=gameid
           nwplyr=dbRef.child("games").child(gameid).child("newplayer").get()
-          nwplyr^=1
+          try:
+            nwplyr.append(username)
+          except:
+            nwplyr=[username]
           dbRef.child("games").child(gameid).child("newplayer").set(nwplyr)
           print(nwplyr)
           return redirect('waiting')

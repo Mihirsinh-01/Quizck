@@ -1,5 +1,56 @@
 <h1>List of All Players for Quiz {{current}}</h1>
-<h2>Quiz Code is {{code}}</h2>
-{% for player in players %}
-{{ player }}
-{% endfor %}
+<h2>Quiz Code is <span id="code">{{code}}</span></h2>
+
+<div id='fire'>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+  
+  var config = {
+  "apiKey": "AIzaSyDNn1-wkMm-g0cH2BKQ6XjdLTl6ldds8ZE",
+  "authDomain": "quizck-74e04.firebaseapp.com",
+  "projectId": "quizck-74e04",
+  "storageBucket": "quizck-74e04.appspot.com",
+  "messagingSenderId": "555502389734",
+  "appId": "1:555502389734:web:2a977e89e54df3c69cae27",
+  "measurementId": "G-XFLZV89Q56",
+  "databaseURL": "https://quizck-74e04-default-rtdb.firebaseio.com/"
+}
+
+firebase.initializeApp(config);
+const dbRef = firebase.database().ref();
+dbRef.child("games").on('value',function(snapshot){
+  console.log(snapshot.val())
+});
+
+var code="{{code}}";
+  console.log(code)
+  dbRef.child("games/"+code).once('value',function(snapshot){
+  
+    snapshot.forEach(function(child) {
+      if(child.key=='newplayer'){
+        var all=child.val();
+        var content="";
+        for(var i=0;i<all.length;i++){
+          content+=all[i]+"     ";
+        }
+        $('#fire').replaceWith(content)
+      }
+    });
+  });
+dbRef.child("games/"+code).on('child_changed', function(snapshot){
+    snapshot.forEach(function(child) {
+      if(child.key=='newplayer'){
+        var all=child.val();
+        var content="";
+        for(var i=0;i<all.length;i++){
+          content+=all[i]+"     ";
+        }
+        $('#fire').replaceWith(content)
+      }
+    });
+});
+</script>
