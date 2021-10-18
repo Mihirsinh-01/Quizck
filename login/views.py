@@ -1,6 +1,5 @@
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
-from django.contrib.auth import login, authenticate
 from .forms import signupForm,loginForm
 from .models import Login
 from django.views.decorators.csrf import csrf_exempt
@@ -20,6 +19,8 @@ def signup(request):
           return render(request, 'signup.html', {'form': form})
         userLogin=Login(username=username,password=password,emailId=emailId)
         userLogin.save()
+
+        return redirect('login')
 
         
         # return HttpResponse('/thanks/')

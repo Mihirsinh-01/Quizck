@@ -70,6 +70,17 @@ argon2 = ["argon2-cffi (>=16.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "firebase"
+version = "3.0.1"
+description = "Python interface to the Google's Firebase REST APIs"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+requests = "*"
+
+[[package]]
 name = "firebase-admin"
 version = "5.0.3"
 description = "Firebase Admin Python SDK"
@@ -425,7 +436,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "6f4b5053139ee03700205d120dc45043726f10b2712b0d6261742884fb760056"
+content-hash = "50f6cfc2c7507e424c6237bdd73b439149f080c2298124d92a9e95a54994df0e"
 
 [metadata.files]
 asgiref = [
@@ -451,6 +462,9 @@ charset-normalizer = [
 django = [
     {file = "Django-3.1.5-py3-none-any.whl", hash = "sha256:efa2ab96b33b20c2182db93147a0c3cd7769d418926f9e9f140a60dca7c64ca9"},
     {file = "Django-3.1.5.tar.gz", hash = "sha256:2d78425ba74c7a1a74b196058b261b9733a8570782f4e2828974777ccca7edf7"},
+]
+firebase = [
+    {file = "firebase-3.0.1-py3-none-any.whl", hash = "sha256:39f7a149bef90735a17fddda30cab3cb24b03e40ab221c12e1217ff0cfd38203"},
 ]
 firebase-admin = [
     {file = "firebase_admin-5.0.3-py3-none-any.whl", hash = "sha256:2456278255512822f7e8b2f1c86153d56e780eae4a9caa1b12e43710d1326e7d"},

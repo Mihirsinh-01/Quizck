@@ -4,21 +4,21 @@ from player.models import Player
 from .forms import createQuizForm
 from .models import Quiz
 from django.http import HttpResponse
-# import pyrebase
 import json
 import shortuuid
-from firebase_admin import db
+import firebase_admin
+from firebase_admin import db, credentials
 
 # mihir firebase
 firebaseConfig = {
-    "apiKey": "AIzaSyDNn1-wkMm-g0cH2BKQ6XjdLTl6ldds8ZE",
-    "authDomain": "quizck-74e04.firebaseapp.com",
-    "projectId": "quizck-74e04",
-    "storageBucket": "quizck-74e04.appspot.com",
-    "messagingSenderId": "555502389734",
-    "appId": "1:555502389734:web:2a977e89e54df3c69cae27",
-    "measurementId": "G-XFLZV89Q56",
-    "databaseURL": "https://quizck-74e04-default-rtdb.firebaseio.com/"
+  "apiKey": "AIzaSyDNn1-wkMm-g0cH2BKQ6XjdLTl6ldds8ZE",
+  "authDomain": "quizck-74e04.firebaseapp.com",
+  "projectId": "quizck-74e04",
+  "storageBucket": "quizck-74e04.appspot.com",
+  "messagingSenderId": "555502389734",
+  "appId": "1:555502389734:web:2a977e89e54df3c69cae27",
+  "measurementId": "G-XFLZV89Q56",
+  "databaseURL": "https://quizck-74e04-default-rtdb.firebaseio.com/"
 }
 
 ## dhvanik firebase
@@ -33,8 +33,14 @@ firebaseConfig = {
 #   "databaseURL":"https://quizck-4548a-default-rtdb.firebaseio.com/"
 #   };
 
-# firebase = pyrebase.initialize_app(firebaseConfig)
-# pdb = firebase.database()
+import firebase_admin
+import os
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="host/templates/firebase.json"
+
+cred=credentials.Certificate('host/templates/firebase.json')
+fireapp=firebase_admin.initialize_app(cred,{
+  "databaseURL":"https://quizck-74e04-default-rtdb.firebaseio.com/"
+},name="host")
 dbRef = db.reference()
 
 
@@ -53,11 +59,10 @@ def dashboard(req):
 
 def quiz(req):
     username = req.session['username']
-    temp = Quiz.objects.filter(hostname=username).values_list('quizId',
-                                                              flat=True)
+    temp = Quiz.objects.filter(hostname=username).values_list('quizId',flat=True)
     mx = 0
     for x in temp:
-        mx = max(mx, x)
+      mx = max(mx, x)
     req.session['quizId'] = mx + 1
     return redirect('createQuiz')
 
@@ -117,18 +122,7 @@ def done(req):
             username = req.session['username']
             quizId = req.session['quizId']
 
-            quiz = Quiz(hostname=username,
-                        quizId=quizId,
-                        questionNumber=questionNumber,
-                        question=question,
-                        option1=option1,
-                        option2=option2,
-                        option3=option3,
-                        option4=option4,
-                        answer=answer,
-                        marks=marks,
-                        timer=timer)
-
+            quiz = Quiz(hostname=username,quizId=quizId,questionNumber=questionNumber,question=question,option1=option1,option2=option2,option3=option3,option4=option4,answer=answer,marks=marks,timer=timer)
             quiz.save()
 
     return redirect('dashboard')
@@ -139,40 +133,51 @@ def quizPage(req, **primarykey):
     qz = Quiz.objects.filter(quizId=x, hostname=req.session["username"])
     qz = serializers.serialize('json', qz)
     qz = json.loads(qz)
-    print(type(qz))
-    print(qz)
-    print("Done")
+    # print(type(qz))
+    # print(qz)
+    # print("Done")
     code = shortuuid.ShortUUID().random(length=4)
     req.session["code"] = code
-    # pdb.child("games").child(code).set({
-        'host': req.session["username"],
-        'next': 0,
-        'newplayer': 0
+    dbRef.child("games").child(code).set({
+      'host': req.session["username"],
+      'next': 0,
+      'newplayer': 0
     })
 
     return render(req, 'quizPage.html', {
-        "sec": 105,
-        "query": qz,
-        "code": code
+      "sec": 105,
+      "query": qz,
+      "code": code
     })
 
 
 globReq = ""
 
-
 def strm(message):
-    print(message)
-    print("Data Changed")
-    print(globReq)
-    render(globReq, "waiting.html", {'code': globReq.session['code']})
-    # redirect('waiting')
+  print('inside strm function')
+  print()
+  qz = globReq.session["code"]
+  players = Player.objects.filter(banned=False,gameId=qz).values_list('username',flat=True)
+  alll = []
+  for player in players:
+    alll.append(player)
+  print("Data Changed")
+  if 'username' in globReq.session:
+    print(globReq.session['username'])
+    print("List of Players: ")
+    print(alll)
+  else:
+    print("other user")
+  
+  print('center of strm function')
+  print()
+  return HttpResponse('<script>window.location="{% url \'waiting\' %}";</script>')
+  return render(globReq, "waiting.html", {'players':alll,'code': globReq.session['code']})
+  print('end of strm function')
 
 
 def fbase(req):
-
-    # pdb.child("games").child(req.session["code"]).stream(strm)
-    # pdb.child("Custom Key").set({"name":"Mihir","surname":"Vaja"})
-    return HttpResponse("<b>Data Pushed in Firebase</b>")
+  return HttpResponse("<b>Data Pushed in Firebase</b>")
 
 
 def tryy(req):
@@ -182,9 +187,7 @@ def tryy(req):
 
 
 def temp(event):
-    sn = event.snapshot
-    val = sn.value['newplayer']
-    print(val)
+    print(event)
     print("temp function is called")
 
 
@@ -192,18 +195,26 @@ def waiting(req):
     global globReq
 
     qz = req.session["code"]
-    players = Player.objects.filter(banned=False,
-                                    gameId=qz).values_list('username',
-                                                           flat=True)
+    players = Player.objects.filter(banned=False,gameId=qz).values_list('username',flat=True)
     alll = []
-    dbRef.child("games").child(qz).onValue.listen(temp)
     globReq = req
-    # pdb.child("games").child(qz).stream(strm)
+    path='games/'+qz
+    db.reference(path).listen(strm)
+    nw=db.reference(path).get_if_changed("dhvanik")
+    print("New")
+    print(nw)
+    print("After STRM")
 
     for player in players:
         alll.append(player)
+
+    # return HttpResponse('<script>window.location="/waiting";</script>')
 
     return render(req, 'waiting.html', {
         'players': alll,
         'code': req.session["code"]
     })
+
+
+# https://replit.com/@MIHIRSINHVAJA/Quizck#host/templates/firebasejson.json
+

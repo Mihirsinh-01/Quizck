@@ -1,2 +1,10 @@
 django
 django-crispy-forms
+gcloud
+sseclient
+firebase
+python_jwt
+pycrypto
+requests_toolbelt
+firebase_admin
+shortuuid

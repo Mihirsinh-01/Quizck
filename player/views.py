@@ -4,6 +4,13 @@ from host.models import Quiz
 from .forms import playerForm
 from django.http import HttpResponse
 from firebase import firebase
+import firebase_admin
+from firebase_admin import db, credentials
+from django.core import serializers
+import json
+import os
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="host/templates/firebase.json"
+
 
 
 firebaseConfig = {
@@ -16,10 +23,17 @@ firebaseConfig = {
     "measurementId": "G-XFLZV89Q56",
     "databaseURL":"https://quizck-74e04-default-rtdb.firebaseio.com/"
   };
-firebase = firebase.FirebaseApplication('https://quizck-74e04-default-rtdb.firebaseio.com/', None)
-# firebase=pyrebase.initialize_app(firebaseConfig)
-# db=firebase.database()
-db=firebase
+
+# print(firebase_admin.get_app())
+print("Printed")
+try:
+    app = firebase_admin.get_app("Quizck")
+except ValueError as e:
+  print("Inside Value Error")
+  cred = credentials.Certificate('host/templates/firebase.json')
+  firebase_admin.initialize_app(cred,firebaseConfig)
+
+dbRef = db.reference()
 
 
 def joinplayer(request):
@@ -30,15 +44,17 @@ def joinplayer(request):
         username=request.POST['username']
         if Player.objects.filter(gameId=gameid,username=username).exists():
           return HttpResponse("Username already Exists !!!")
-        re=list(db.child("games").shallow().get().val())
+        re=dbRef.child("games").get()
+        print(re)
+        print("HELLLOLLLLDDDS")
         if gameid in re:
           print("Yes Game Exists")
           playerLogin=Player(gameId=gameid,username=username)
           playerLogin.save()
           request.session["code"]=gameid
-          nwplyr=db.child("games").child(gameid).child("newplayer").get().val()
+          nwplyr=dbRef.child("games").child(gameid).child("newplayer").get()
           nwplyr^=1
-          db.child("games").child(gameid).child("newplayer").set(nwplyr)
+          dbRef.child("games").child(gameid).child("newplayer").set(nwplyr)
           print(nwplyr)
           return redirect('waiting')
         else:
