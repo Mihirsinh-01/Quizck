@@ -1,5 +1,13 @@
 {
   "files": {
+    "host/templates/waiting.html": [
+      {
+        "id": "52ae411a-b904-4a72-8769-bb7d76a62cee",
+        "line": 35,
+        "version": 1431,
+        "index": 1116
+      }
+    ],
     "login/forms.py": [
       {
         "id": "dbe60491-e202-4eee-9bcd-48a6ca07f579",

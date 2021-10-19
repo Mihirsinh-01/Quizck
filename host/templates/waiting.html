@@ -1,8 +1,10 @@
 <h1>List of All Players for Quiz {{current}}</h1>
 <h2>Quiz Code is <span id="code">{{code}}</span></h2>
-
-<div id='fire'>
-
+{% ifequal user "admin" %}
+<div><button id="start">Start</button></div><br>
+{% endifequal %}
+<div>
+  <span id="fire"></span>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
@@ -22,13 +24,9 @@
 
 firebase.initializeApp(config);
 const dbRef = firebase.database().ref();
-dbRef.child("games").on('value',function(snapshot){
-  console.log(snapshot.val())
-});
 
 var code="{{code}}";
-  console.log(code)
-  dbRef.child("games/"+code).once('value',function(snapshot){
+  dbRef.child("games/"+code).on('value',function(snapshot){
   
     snapshot.forEach(function(child) {
       if(child.key=='newplayer'){
@@ -37,20 +35,30 @@ var code="{{code}}";
         for(var i=0;i<all.length;i++){
           content+=all[i]+"     ";
         }
-        $('#fire').replaceWith(content)
+        $('#fire').text(content)
       }
     });
   });
 dbRef.child("games/"+code).on('child_changed', function(snapshot){
-    snapshot.forEach(function(child) {
-      if(child.key=='newplayer'){
-        var all=child.val();
-        var content="";
+  if(snapshot.key=='newplayer'){    
+    var all=snapshot.val();
+    var content="";
         for(var i=0;i<all.length;i++){
           content+=all[i]+"     ";
         }
-        $('#fire').replaceWith(content)
-      }
-    });
+        $('#fire').text(content);
+  }
+  else if(snapshot.key=='next'){    
+    window.location('showQuiz')
+  }
 });
+
 </script>
+{% ifequal user "admin" %}
+<script>
+$('#start').click(function(){
+  dbRef.child("games/"+code).update({"next":1});
+});
+
+</script>
+{% endifequal%}

@@ -9,6 +9,7 @@ from firebase_admin import db, credentials
 from django.core import serializers
 import json
 import os
+
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="host/templates/firebase.json"
 
 
@@ -45,8 +46,6 @@ def joinplayer(request):
         if Player.objects.filter(gameId=gameid,username=username).exists():
           return HttpResponse("Username already Exists !!!")
         re=dbRef.child("games").get()
-        print(re)
-        print("HELLLOLLLLDDDS")
         if gameid in re:
           print("Yes Game Exists")
           playerLogin=Player(gameId=gameid,username=username)
@@ -59,6 +58,11 @@ def joinplayer(request):
             nwplyr=[username]
           dbRef.child("games").child(gameid).child("newplayer").set(nwplyr)
           print(nwplyr)
+          # return render(request, 'host/waiting.html', {
+          #   'code': gameid,
+          #   'user':'player'
+          #   })
+          request.session['user']="player"
           return redirect('waiting')
         else:
           print("No game with such ID")

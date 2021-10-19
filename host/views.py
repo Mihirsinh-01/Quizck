@@ -71,7 +71,8 @@ def createQuiz(req):
     if req.method == 'POST':
         form = createQuizForm(req.POST)
         if form.is_valid():
-            questionNumber = req.POST['question_Number']
+            cnt=Quiz.objects.filter(quizId=req.session['quizId'],hostname=req.session['username']).count()
+            questionNumber = cnt+1
             question = req.POST['question']
             option1 = req.POST['option1']
             option2 = req.POST['option2']
@@ -109,35 +110,36 @@ def done(req):
     if req.method == 'POST':
         form = createQuizForm(req.POST)
         if form.is_valid():
-            questionNumber = req.POST['question_Number']
-            question = req.POST['question']
-            option1 = req.POST['option1']
-            option2 = req.POST['option2']
-            option3 = req.POST['option3']
-            option4 = req.POST['option4']
-            answer = req.POST['answer']
-            marks = req.POST['marks']
-            timer = req.POST['timer']
+          cnt=Quiz.objects.filter(quizId=req.session['quizId'],hostname=req.session['username']).count()
+          questionNumber = cnt+1
+          question = req.POST['question']
+          option1 = req.POST['option1']
+          option2 = req.POST['option2']
+          option3 = req.POST['option3']
+          option4 = req.POST['option4']
+          answer = req.POST['answer']
+          marks = req.POST['marks']
+          timer = req.POST['timer']
 
-            username = req.session['username']
-            quizId = req.session['quizId']
+          username = req.session['username']
+          quizId = req.session['quizId']
 
-            quiz = Quiz(hostname=username,quizId=quizId,questionNumber=questionNumber,question=question,option1=option1,option2=option2,option3=option3,option4=option4,answer=answer,marks=marks,timer=timer)
-            quiz.save()
+          quiz = Quiz(hostname=username,quizId=quizId,questionNumber=questionNumber,question=question,option1=option1,option2=option2,option3=option3,option4=option4,answer=answer,marks=marks,timer=timer)
+          quiz.save()
 
     return redirect('dashboard')
 
 
 def quizPage(req, **primarykey):
-    x = primarykey['pk']
-    qz = Quiz.objects.filter(quizId=x, hostname=req.session["username"])
+    quizId = primarykey['pk']
+    qz = Quiz.objects.filter(quizId=quizId, hostname=req.session["username"])
     qz = serializers.serialize('json', qz)
     qz = json.loads(qz)
-    # print(type(qz))
-    # print(qz)
-    # print("Done")
     code = shortuuid.ShortUUID().random(length=4)
     req.session["code"] = code
+    req.session['user']="admin"
+    req.session['quizId']=quizId
+    req.session['questionNumber']=0
     dbRef.child("games").child(code).set({
       'host': req.session["username"],
       'next': 0,
@@ -210,7 +212,20 @@ def waiting(req):
     # return HttpResponse('<script>window.location="/waiting";</script>')
 
     return render(req, 'waiting.html', {
-        'players': alll,
-        'code': req.session["code"]
+        'code': req.session["code"],
+        'user':req.session['user']
     })
 
+def showQuiz(req):  
+  questionNumber=req.session['questionNumber']+1
+  req.session['questionNumber']=questionNumber
+  qz=Quiz.objects.filter(hostname=req.session['username'],quizId=req.session['quizId'],questionNumber=questionNumber)
+  print(qz)
+  print(qz.count())
+  print("Count")
+  return render(req,"showQuiz.html",{"quiz":qz})
+
+def leaderboard(req):
+  answer=req.POST.get('options')
+  
+  return HttpResponse("<h1>Inside Leaderboard</h1>")

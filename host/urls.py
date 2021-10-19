@@ -9,5 +9,7 @@ urlpatterns = [
     path('quizPage/<int:pk>',views.quizPage,name='quizPage'),
     path('fbase',views.fbase,name='fbase'),
     path('tryy',views.tryy,name='tryy'),
-    path('waiting',views.waiting,name="waiting")
+    path('waiting',views.waiting,name="waiting"),
+    path('showQuiz',views.showQuiz,name='showQuiz'),
+    path('leaderboard',views.leaderboard,name='leaderboard')
 ]
