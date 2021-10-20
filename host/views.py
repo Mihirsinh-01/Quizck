@@ -9,6 +9,7 @@ import shortuuid
 import firebase_admin
 from firebase_admin import db, credentials
 import datetime,pytz
+import time
 
 # mihir firebase
 firebaseConfig = {
@@ -138,7 +139,7 @@ def quizPage(req, **primarykey):
     qz = Quiz.objects.filter(quizId=quizId, hostname=req.session["username"])
     qz = serializers.serialize('json', qz)
     qz = json.loads(qz)
-    code = shortuuid.ShortUUID().random(length=1)
+    code = shortuuid.ShortUUID().random(length=2)
     req.session["code"] = code
     req.session['user']="admin"
     req.session['quizId']=quizId
@@ -203,14 +204,33 @@ def fbase(req):
 
 
 def tryy(req):
-    options = req.POST.get('options')
-    print(options)
     return render(req, 'temp.html')
 
 
-def temp(event):
-    print(event)
-    print("temp function is called")
+def temp(req):
+    return render(req,'temp.html')
+    # from io import StringIO
+    # from xhtml2pdf import pisa
+    # from django.template.loader import get_template
+    # from django.template import Context
+    # from django.http import HttpResponse
+    # import numpy
+    # # from cgi import escape
+
+    # template = get_template("temp.html")
+    # context = Context()
+    # html  = template.render({"radhe":"shyam"})
+    # result = StringIO()
+    # # numpy.genfromtxt(io.BytesIO(x.encode()))
+    # z=html.encode("UTF-8")
+    # print(type(z))
+    # x=numpy.genfromtxt(z)
+    # y=StringIO(x)
+    # pdf = pisa.pisaDocument(y, result)
+    # if not pdf.err:
+    #     return HttpResponse(result.getvalue(), content_type='application/pdf')
+    # # return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
+    # print("temp function is called")
 
 
 def waiting(req):
@@ -242,45 +262,60 @@ def showQuiz(req):
   print("Count is ",cnt)
   print("Current Question is ",questionNumber)
   if questionNumber>cnt:
-    # req.session['questionNumber']=0
-    return HttpResponse("Questions Exceeded")
-  
-  qz=Quiz.objects.filter(hostname=req.session['hostname'],quizId=req.session['quizId'],questionNumber=questionNumber)[0]
-  print(qz.marks);
-  print("Printed")
-  return render(req,"showQuiz.html",{"quiz":qz})
+    return redirect('tryy')
+  else:
+    qz=Quiz.objects.filter(hostname=req.session['hostname'],quizId=req.session['quizId'],questionNumber=questionNumber)[0]
+    return render(req,"showQuiz.html",{"quiz":qz})
 
 def leaderboard(req):
   answer=req.POST.get('options')
   gameId=req.session['code']
   host=req.session['hostname']
   quizId=req.session['quizId']
-  print('okkkkkkkkkkkkkkkkkkkkk')
-  print(quizId)
-  print(host)
-  print(req.session['questionNumber'])
-  print("HAHAHA")
-  ques=list(Quiz.objects.filter(quizId=quizId,questionNumber=req.session['questionNumber'],hostname=host))[0]
-  marks="0"
+
+  
+
+  ques=list(Quiz.objects.filter(quizId=quizId,questionNumber=req.session['questionNumber'],hostname=host))
+  if len(ques)==0:
+    return HttpResponse("<h1>Questions Exceeded in Leaderboard</h1>")
+  ques=ques[0]
+  marks=0
   if ques.answer == answer:
-    marks=str(ques.marks)
-  print(ques.timer)
-  rec=list(Record.objects.filter(gameId=gameId,playername=req.session['playername']))
-  if len(rec)==0:
-    Record(gameId=gameId, quizId=quizId, marks=marks, playername=req.session['playername']).save()
-  else:
-    rec=rec[0]
-    print(rec.marks.split(","))
-    print(type(rec.marks.split(",")))
-    print("REC Printed")
-    print(rec.marks)
-    a=rec.marks.split(",")
-    a.append(marks)
-    ",".join(a)
-    # rec.marks=",".join(rec.marks.split(",").append(marks))
-    rec.marks=a
-    rec.save()
-  print(answer)
-  # return render('')
-  print('pppppppppppppppppppppppp')
-  return redirect('showQuiz')
+    marks=ques.marks
+  if(req.session['user']=='player'):
+    rec=list(Record.objects.filter(gameId=gameId,playername=req.session['playername']))
+    if len(rec)==0:
+      Record(gameId=gameId, quizId=quizId, marks=str(marks), playername=req.session['playername']).save()
+    else:
+      rec=rec[0]
+      a=rec.marks.split(",")
+      if req.session['questionNumber']-1 <= len(a):
+        a.append(str(marks))
+        a=",".join(a)
+        rec.marks=a
+        rec.save()
+  
+  time.sleep(3)
+  lead=list(Record.objects.filter(quizId=quizId,gameId=gameId))
+  allPlayer=[]
+  for item in lead:
+    allmarks=item.marks.split(",")
+    total=0
+    for mrk in allmarks:
+      total+=int(mrk)
+    if allmarks[len(allmarks)-1]=="0":
+      tot=str(total)+' (0)'
+    else:
+      tot=str(total)+" (+"+str(allmarks[len(allmarks)-1])+")"
+    allPlayer.append([total,[item.playername,tot]])
+    # allPlayer[total]=[item.playername,tot]
+  
+  x=allPlayer.sort(reverse=True)
+  # x=dict(sorted(allPlayer.items(),reverse=True))
+  print(x)
+  leader=[y for x,y in allPlayer] 
+  print(leader)
+
+  print("LeaderBoard Printed")
+
+  return render(req,'leaderboard.html',{"leaderboard":leader,"user":req.session['user'],"code":req.session['code']})

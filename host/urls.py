@@ -11,5 +11,6 @@ urlpatterns = [
     path('tryy',views.tryy,name='tryy'),
     path('waiting',views.waiting,name="waiting"),
     path('showQuiz',views.showQuiz,name='showQuiz'),
-    path('leaderboard',views.leaderboard,name='leaderboard')
+    path('leaderboard',views.leaderboard,name='leaderboard'),
+    path('temp',views.temp,name="temp")
 ]

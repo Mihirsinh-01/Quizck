@@ -14,4 +14,6 @@ python = "^3.8"
 shortuuid = "^1.0.1"
 firebase-admin = "^5.0.3"
 firebase = "^3.0.1"
+weasyprint = "^53.3"
+xhtml2pdf = "^0.2.5"
 [tool.poetry.dev-dependencies]
