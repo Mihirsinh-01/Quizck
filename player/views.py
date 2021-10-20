@@ -63,6 +63,7 @@ def joinplayer(request):
           #   'user':'player'
           #   })
           request.session['user']="player"
+          request.session['playername']=username
           return redirect('waiting')
         else:
           print("No game with such ID")

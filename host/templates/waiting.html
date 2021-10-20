@@ -49,7 +49,7 @@ dbRef.child("games/"+code).on('child_changed', function(snapshot){
         $('#fire').text(content);
   }
   else if(snapshot.key=='next'){    
-    window.location('showQuiz')
+    window.location="{% url 'showQuiz' %}";
   }
 });
 

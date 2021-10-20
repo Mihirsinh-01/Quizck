@@ -1,11 +1,19 @@
 {
   "files": {
+    "host/models.py": [
+      {
+        "id": "ebf519c3-4590-4369-a54b-13e2605ab19c",
+        "line": 27,
+        "version": 881,
+        "index": 822
+      }
+    ],
     "host/templates/waiting.html": [
       {
         "id": "52ae411a-b904-4a72-8769-bb7d76a62cee",
-        "line": 35,
-        "version": 1431,
-        "index": 1116
+        "line": 36,
+        "version": 1598,
+        "index": 1141
       }
     ],
     "login/forms.py": [

@@ -3,47 +3,52 @@
         <title>JavaScript</title> 
     </head>
     <body>
-      <h1>Marks:{{quiz.fields.marks}}</h1>
+      <h1>Marks:{{quiz.marks}}</h1>
       <form id='form' action="leaderboard" method="POST">
         {% csrf_token %}
         <br>
-        Question{{q.fields.questionNumber}}:&nbsp
-        {{quiz.fields.question}}<br>
-        1)<input type="radio" id="option1" value={{quiz.fields.option1}} name="options">
-          <label for="html">{{quiz.fields.option1}}</label><br>
-        2)<input type="radio" id="option2" value={{quiz.fields.option2}} name="options">
-          <label for="html">{{quiz.fields.option2}}</label><br>
-        3)<input type="radio" id="option3" value={{quiz.fields.option3}} name="options">
-          <label for="html">{{quiz.fields.option3}}</label><br>
-        4)<input type="radio" id="option4" value={{quiz.fields.option4}} name="options">
-          <label for="html">{{quiz.fields.option4}}</label><br>
+        Question{{quiz.questionNumber}}:&nbsp
+        {{quiz.question}}<br>
+        1)<input type="radio" id="option1" value={{quiz.option1}} name="options">
+          <label for="html">{{quiz.option1}}</label><br>
+        2)<input type="radio" id="option2" value={{quiz.option2}} name="options">
+          <label for="html">{{quiz.option2}}</label><br>
+        3)<input type="radio" id="option3" value={{quiz.option3}} name="options">
+          <label for="html">{{quiz.option3}}</label><br>
+        4)<input type="radio" id="option4" value={{quiz.option4}} name="options">
+          <label for="html">{{quiz.option4}}</label><br>
         <br>
         <br><hr>
       </form>
       <br>
-      <h2>Time<div id="stopwatch">  {{quiz.fields.timer}} </div></h2>
+      <h2>Time<div id="stopwatch">  {{quiz.timer}} </div></h2>
     </body>
 </html>
 
+<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
 <script>
-  $( document ).ready(function() {
+  $(document).ready(function() {
     timerCycle();
 });
 
-  var sec = {{quiz.fields.timer}};
+  var sec = {{quiz.timer}};
   const timer = document.getElementById('stopwatch');
   function timerCycle() {
 
       sec=sec-1;
-      if(sec<0){
+      sec=Math.max(sec,0)
+      if(sec<=0){
         $('#form').submit();
+        
       }
       var x=sec;
       if (x < 10 || x == 0) {
         x='0'+x;
       }
       timer.innerHTML = x;
-      if(sec!=0) setTimeout("timerCycle()", 1000);
+      if(sec>=0) setTimeout("timerCycle()", 1000);
   }
   
 </script>

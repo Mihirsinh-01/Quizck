@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect
 from django.core import serializers
 from player.models import Player
 from .forms import createQuizForm
-from .models import Quiz
+from .models import Quiz, Game, Record
 from django.http import HttpResponse
 import json
 import shortuuid
 import firebase_admin
 from firebase_admin import db, credentials
+import datetime,pytz
 
 # mihir firebase
 firebaseConfig = {
@@ -125,6 +126,8 @@ def done(req):
           quizId = req.session['quizId']
 
           quiz = Quiz(hostname=username,quizId=quizId,questionNumber=questionNumber,question=question,option1=option1,option2=option2,option3=option3,option4=option4,answer=answer,marks=marks,timer=timer)
+
+          
           quiz.save()
 
     return redirect('dashboard')
@@ -135,11 +138,31 @@ def quizPage(req, **primarykey):
     qz = Quiz.objects.filter(quizId=quizId, hostname=req.session["username"])
     qz = serializers.serialize('json', qz)
     qz = json.loads(qz)
-    code = shortuuid.ShortUUID().random(length=4)
+    code = shortuuid.ShortUUID().random(length=1)
     req.session["code"] = code
     req.session['user']="admin"
     req.session['quizId']=quizId
-    req.session['questionNumber']=0
+    
+
+    username = req.session['username']
+    quizId = req.session['quizId']
+    dt=datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
+    
+    game=list(Game.objects.filter(hostname=username,quizId=quizId))
+    if len(game)==0:
+      game=Game(hostname=username,quizId=quizId,gameId=code,gameTime=dt.strftime("%b %d %Y %H:%M:%S"))
+      game.save()
+    else:
+      game=game[0]
+      gameId=game.gameId.split(",")
+      gameTime=game.gameTime.split(",")
+      gameId.append(code)
+      gameTime.append(dt.strftime("%b %d %Y %H:%M:%S"))
+      game.gameId=",".join(gameId)
+      game.gameTime=",".join(gameTime)
+
+      game.save()
+
     dbRef.child("games").child(code).set({
       'host': req.session["username"],
       'next': 0,
@@ -170,17 +193,12 @@ def strm(message):
     print(alll)
   else:
     print("other user")
-  
-  print('center of strm function')
-  print()
-  # return render(globReq,'waiting.html',{'players': alll,'code': globReq.session["code"]})
   return redirect('fbase')
   print('end of strm function')
 
 
 def fbase(req):
   return HttpResponse('<script>window.location="waiting.html";</script>')
-  # return HttpResponse("<b>Data Pushed in Firebase</b>")
   
 
 
@@ -197,35 +215,72 @@ def temp(event):
 
 def waiting(req):
     global globReq
-
-    qz = req.session["code"]
-    players = Player.objects.filter(banned=False,gameId=qz).values_list('username',flat=True)
-    alll = []
+    
+    gameId = req.session["code"]
     globReq = req
-    path='games/'+qz
+    path='games/'+gameId
     db.reference(path).listen(strm)
-    print("After STRM")
 
-    for player in players:
-        alll.append(player)
+    games=list(Game.objects.all())
+    for x in games:
+      if gameId in x.gameId.split(","):
+        req.session['hostname']=x.hostname
+        req.session['quizId']=x.quizId
+        break
 
-    # return HttpResponse('<script>window.location="/waiting";</script>')
+    req.session['questionNumber']=0
 
     return render(req, 'waiting.html', {
         'code': req.session["code"],
         'user':req.session['user']
     })
 
-def showQuiz(req):  
+def showQuiz(req):
   questionNumber=req.session['questionNumber']+1
   req.session['questionNumber']=questionNumber
-  qz=Quiz.objects.filter(hostname=req.session['username'],quizId=req.session['quizId'],questionNumber=questionNumber)
-  print(qz)
-  print(qz.count())
-  print("Count")
+  cnt=Quiz.objects.filter(hostname=req.session['hostname'],quizId=req.session['quizId']).count()
+  print("Count is ",cnt)
+  print("Current Question is ",questionNumber)
+  if questionNumber>cnt:
+    # req.session['questionNumber']=0
+    return HttpResponse("Questions Exceeded")
+  
+  qz=Quiz.objects.filter(hostname=req.session['hostname'],quizId=req.session['quizId'],questionNumber=questionNumber)[0]
+  print(qz.marks);
+  print("Printed")
   return render(req,"showQuiz.html",{"quiz":qz})
 
 def leaderboard(req):
   answer=req.POST.get('options')
-  
-  return HttpResponse("<h1>Inside Leaderboard</h1>")
+  gameId=req.session['code']
+  host=req.session['hostname']
+  quizId=req.session['quizId']
+  print('okkkkkkkkkkkkkkkkkkkkk')
+  print(quizId)
+  print(host)
+  print(req.session['questionNumber'])
+  print("HAHAHA")
+  ques=list(Quiz.objects.filter(quizId=quizId,questionNumber=req.session['questionNumber'],hostname=host))[0]
+  marks="0"
+  if ques.answer == answer:
+    marks=str(ques.marks)
+  print(ques.timer)
+  rec=list(Record.objects.filter(gameId=gameId,playername=req.session['playername']))
+  if len(rec)==0:
+    Record(gameId=gameId, quizId=quizId, marks=marks, playername=req.session['playername']).save()
+  else:
+    rec=rec[0]
+    print(rec.marks.split(","))
+    print(type(rec.marks.split(",")))
+    print("REC Printed")
+    print(rec.marks)
+    a=rec.marks.split(",")
+    a.append(marks)
+    ",".join(a)
+    # rec.marks=",".join(rec.marks.split(",").append(marks))
+    rec.marks=a
+    rec.save()
+  print(answer)
+  # return render('')
+  print('pppppppppppppppppppppppp')
+  return redirect('showQuiz')
