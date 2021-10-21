@@ -295,8 +295,18 @@ def leaderboard(req):
         rec.marks=a
         rec.save()
   
-  time.sleep(3)
-  lead=list(Record.objects.filter(quizId=quizId,gameId=gameId))
+  players=dbRef.child("games").child(gameId).child("newplayer").get()
+  lead=[]
+  while True:
+    print("players",len(players))
+    lead=list(Record.objects.filter(quizId=quizId,gameId=gameId))
+    print("leader",len(lead))
+    if(len(lead)==len(players)-1):
+      for x in lead:
+        if len(x.marks.split(","))!=
+      break
+    else:
+      time.sleep(1)
   allPlayer=[]
   for item in lead:
     allmarks=item.marks.split(",")

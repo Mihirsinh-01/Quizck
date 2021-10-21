@@ -21,9 +21,6 @@ def signup(request):
         userLogin.save()
 
         return redirect('login')
-
-        
-        # return HttpResponse('/thanks/')
   else:
       form = signupForm()
 
@@ -48,6 +45,3 @@ def login(request):
 
   return render(request, 'login.html', {'form': form})
 
-# def dashboard(req):
-#   return render(req,'dashboard.html')
-  
