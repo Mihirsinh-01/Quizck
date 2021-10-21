@@ -1,60 +1,102 @@
-<head>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js" integrity="sha512-dqw6X88iGgZlTsONxZK9ePmJEFrmHwpuMrsUChjAw1mRUhUITE5QU9pkcSox+ynfLhL15Sv2al5A0LVyDCmtUw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-</head>
-<body>
+{% extends "base.html" %}
+  
+{% block style %}
+    body {
+      background-color: #DADADA;
+    }
+    @media only screen and (max-width: 200px) {
+      .masthead.segment {
+        min-height: 150px;
+      }
+      .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+      }
+      .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+      }
+    }
+    .masthead.segment {
+      min-height: 100px;
+      padding: 1em 0em;            
+    }
+    .masthead h1.ui.header {
+      margin-top: 1em;
+      margin-bottom: 0em;
+      font-size: 5em;
+      font-weight: normal;
+    }
+    .masthead h2 {
+      font-size: 2em;
+      font-weight: normal;
+      margin-bottom: 1em;
+    }
+    #head{
+      padding-bottom:3.5em;
+    }
+    form{
+      font-size:1.2em;
+    }
+{% endblock %}
 
-  <div class="ui message">
-    <div class="header">
-      Messages
-    </div>
-    <ul class="list">
-      {% for message in messages %}
-        <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-  </div>
+{% block body %}
 
-
-<form action="" method="post">
-    {% csrf_token %}    
-    {{ form.as_p }}
-    <input type="submit" value="Submit">
-</form>
-
-<div class="ui placeholder segment">
-  <div class="ui two column very relaxed stackable grid">
-    <div class="column">
-      <div class="ui form">
-        <form action="" method="post">
-          {% csrf_token %}
-          <div class="field">
-            <label for="id_username">Username</label>
-            <div class="ui left icon input">
-              <input type="text" name="username" id="id_username" placeholder="Username" required>
-              <i class="user icon"></i>
-            </div>
-          </div>
-          <div class="field">
-            <label for="id_password">Password</label>
-            <div class="ui left icon input">
-              <input type="password" name="password" id="id_password" required>
-              <i class="lock icon"></i>
-            </div>
-          </div>
-          <button class="ui blue submit button">Login</button>
-        </form>
+    <div id="head" class="ui inverted vertical masthead center aligned segment ">
+      <div class="ui text container">
+        <h1 class="ui inverted header">Quizck</h1>
+        <h2 class="ui inverted">Play, Compete and Learn</h2>
+        <a href="/join" class="ui huge primary button">Lets Play <i class="right arrow icon"></i></a>
       </div>
     </div>
-    <div class="middle aligned column">
-      <div class="ui big button">
-        <i class="signup icon"></i>
-        Sign Up
+    {% if messages %}
+    <div class="ui error message container">
+      <div class="header">Messages:</div>
+      <ul class="list">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    <div class="ui placeholder segment container">
+      <div class="ui two column very relaxed stackable grid">
+        <div class="eight wide column">
+          <div class="ui form">
+            <form action="" method="post">
+              {% csrf_token %}
+              <div class="field">
+                <label for="username">Username</label>
+                <div class="ui left icon input">
+                  <input type="text" name="username" id="id_username" placeholder="Username" value="{{username}}" required>
+                  <i class="user icon"></i>
+                </div>
+              </div>
+              <div class="fluid field">
+                <label for="password">Password</label>
+                <div class="ui left icon input">
+                  <input type="password" name="password" id="id_password" value="{{password}}" required>
+                  <i class="lock icon"></i>
+                </div>
+              </div>
+              <button style="font-size:1em" class="fluid ui teal submit button" type='submit'>Login</button>
+            </form>
+          </div>
+        </div>
+        <div id="next"class="middle aligned column">
+          <div class="ui big button">
+            <i class="signup icon"></i>
+            Sign Up
+          </div>
+        </div>
+      </div>
+      <div class="ui vertical divider">
+        Or
       </div>
     </div>
-  </div>
-  <div class="ui vertical divider">
-    Or
-  </div>
-</div>
-</body>
+    <script>
+      $('#next').click(function(){
+        window.location='signup';
+      });
+</script>
+{% endblock %}

@@ -16,11 +16,11 @@
       }
     }
     .masthead.segment {
-      min-height: 100px;
+      min-height: 50px;
       padding: 1em 0em;      
     }
     .masthead h1.ui.header {
-      margin-top: 1em;
+      margin-top: 2em;
       margin-bottom: 0em;
       font-size: 5em;
       font-weight: normal;
@@ -43,9 +43,46 @@
     .column {
       max-width: 450px;
     }
+    .ui.list{
+      height: 20%;
+      overflow-y: scroll;
+    }
+    .ui.menu{
+      height: 80px;
+    }
   </style>
 </head>
 <body>
+
+  <div class="ui fixed inverted menu">
+    <div class="ui container">
+      <div style="color:white; background-color: blue; text-align: center;">
+        <span style="font-size:30px;">Quizck</span>
+        <span style="font-size:20px;"> - Play, Compete and Learn</span>
+
+      </div>
+
+
+      <div class="right menu">
+        <div class="item">
+        <a class="ui basic blue button" href="#"><i class="add user icon"></i>Profile Here</a>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
 
   <div id="head" class="ui inverted vertical masthead center aligned segment ">
     <div class="ui text container">
@@ -58,36 +95,26 @@
     <div class="column">
       <h2 class="ui teal header">
         <div class="content">
-          Enter Quiz Code
+          Leaderboard
         </div>
       </h2>
-      <form class="ui large form" action="" method="POST">
-        {% csrf_token %}
-        <div class="ui stacked segment">
-          <div class="field">
-            <div class="ui left icon input">
-              <i class="user icon"></i>
-              <input type="text" name="username" value="{{username}}" placeholder="Username" required>
-            </div>
-          </div>
-          <div class="field">
-            <div class="ui left icon input">
-              <i class="pencil icon"></i>
-              <input type="text" name="gameid" placeholder="Game Id" value="{{gameid}}" required>
-            </div>
-          </div>
-          <button class="ui fluid large teal submit button" type="submit">Join Quiz</button>
-        </div>
-      </form>
-      {% if messages %}
-        <div class="ui error message">
-          <ul class="list">
-            {% for message in messages %}
-              <li>{{ message }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% endif %}
+      <div class="ui ordered list">
+        <b class="item">Getting Started</b>
+        <b class="item">Introduction</b>
+        <b class="item">Review</b>
+        <b class="item">Getting Started</b>
+        <b class="item">Introduction</b>
+        <b class="item">Review</b>
+        <b class="item">Getting Started</b>
+        <b class="item">Introduction</b>
+        <b class="item">Review</b>
+        <b class="item">Getting Started</b>
+        <b class="item">Introduction</b>
+        <b class="item">Review</b>
+        <b class="item">Getting Started</b>
+        <b class="item">Introduction</b>
+        <b class="item">Review</b>
+      </div>
     </div>
   </div>
 </body>

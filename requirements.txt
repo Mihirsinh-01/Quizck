@@ -8,3 +8,4 @@ pycrypto
 requests_toolbelt
 firebase_admin
 shortuuid
+xlsxwriter

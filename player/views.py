@@ -7,6 +7,7 @@ from firebase import firebase
 import firebase_admin
 from firebase_admin import db, credentials
 from django.core import serializers
+from django.contrib import messages
 import json
 import os
 
@@ -25,8 +26,6 @@ firebaseConfig = {
     "databaseURL":"https://quizck-74e04-default-rtdb.firebaseio.com/"
   };
 
-# print(firebase_admin.get_app())
-print("Printed")
 try:
     app = firebase_admin.get_app("Quizck")
 except ValueError as e:
@@ -38,16 +37,21 @@ dbRef = db.reference()
 
 
 def joinplayer(request):
+  gameid=""
+  username=""
   if request.method == 'POST':
       form = playerForm(request.POST)
       if form.is_valid():
         gameid=request.POST['gameid']
-        username=request.POST['username']
-        if Player.objects.filter(gameId=gameid,username=username).exists():
-          return HttpResponse("Username already Exists !!!")
+        username=request.POST['username']        
         re=dbRef.child("games").get()
-        if gameid in re:
-          print("Yes Game Exists")
+        if re and gameid in re:
+          if re[gameid]['started']==1:
+            messages.error(request,"Game has already started !!")
+            return render(request, 'entergame.html', {'gameid': gameid,"username":username})
+          if Player.objects.filter(gameId=gameid,username=username).exists():
+            messages.error(request,"Username already Exists !!!")
+            return render(request, 'entergame.html', {'gameid': gameid,"username":username})
           playerLogin=Player(gameId=gameid,username=username)
           playerLogin.save()
           request.session["code"]=gameid
@@ -57,20 +61,14 @@ def joinplayer(request):
           except:
             nwplyr=[username]
           dbRef.child("games").child(gameid).child("newplayer").set(nwplyr)
-          print(nwplyr)
-          # return render(request, 'host/waiting.html', {
-          #   'code': gameid,
-          #   'user':'player'
-          #   })
+          
           request.session['user']="player"
           request.session['playername']=username
           return redirect('waiting')
         else:
-          print("No game with such ID")
-          return HttpResponse('No game with such ID')
-        print(re)
+          messages.error(request,"No game with such ID")
         
   else:
       form = playerForm()
 
-  return render(request, 'entergame.html', {'form': form})
+  return render(request, 'entergame.html', {'gameid': gameid,"username":username})

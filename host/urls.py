@@ -12,5 +12,7 @@ urlpatterns = [
     path('waiting',views.waiting,name="waiting"),
     path('showQuiz',views.showQuiz,name='showQuiz'),
     path('leaderboard',views.leaderboard,name='leaderboard'),
-    path('temp',views.temp,name="temp")
+    path('temp',views.temp,name="temp"),
+    path('tirth',views.tirth,name="tirth"),
+    path('stats/<int:pk>',views.stats,name="stats")
 ]

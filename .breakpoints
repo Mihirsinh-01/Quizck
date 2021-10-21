@@ -11,9 +11,9 @@
     "host/templates/waiting.html": [
       {
         "id": "52ae411a-b904-4a72-8769-bb7d76a62cee",
-        "line": 36,
-        "version": 1598,
-        "index": 1141
+        "line": 104,
+        "version": 2596,
+        "index": 2870
       }
     ],
     "login/forms.py": [

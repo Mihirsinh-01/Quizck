@@ -168,6 +168,7 @@ def quizPage(req, **primarykey):
       'host': req.session["username"],
       'next': 0,
       'newplayer': [''],
+      'started':0
     })
 
     return render(req, 'quizPage.html', {
@@ -206,9 +207,47 @@ def fbase(req):
 def tryy(req):
     return render(req, 'temp.html')
 
+def tirth(req):
+    return render(req, 'tirth.html')
 
 def temp(req):
-    return render(req,'temp.html')
+
+    from django.http import HttpResponse
+    from io import BytesIO
+    import pandas as pd
+
+    # List initialization
+    list1 = ['Assam', 'India',
+            'Lahore', 'Pakistan', 
+            'New York', 'USA',
+            'Bejing', 'China']
+      
+    df = pd.DataFrame()
+      
+    # Creating two columns
+    df['State'] = list1[0::2]
+    df['Country'] = list1[1::2]
+
+    with BytesIO() as b:
+        # Use the StringIO object as the filehandle.
+        writer = pd.ExcelWriter(b, engine='xlsxwriter')
+        df.to_excel(writer, sheet_name='Sheet1')
+        writer.save()
+        # Set up the Http response.
+        filename = 'django_simple.xlsx'
+        response = HttpResponse(
+            b.getvalue(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        return response
+    
+  
+    
+      
+    # Converting to excel
+    # df.to_excel('result.xlsx', index = False)
+    # return render(req,'temp.html')
     # from io import StringIO
     # from xhtml2pdf import pisa
     # from django.template.loader import get_template
@@ -298,13 +337,16 @@ def leaderboard(req):
   players=dbRef.child("games").child(gameId).child("newplayer").get()
   lead=[]
   while True:
-    print("players",len(players))
+    # print("players",len(players))
     lead=list(Record.objects.filter(quizId=quizId,gameId=gameId))
-    print("leader",len(lead))
+    # print("leader",len(lead))
     if(len(lead)==len(players)-1):
+      flag=False
       for x in lead:
-        if len(x.marks.split(","))!=
-      break
+        if len(x.marks.split(","))!=req.session['questionNumber']:
+          flag=True
+      if not flag:
+        break
     else:
       time.sleep(1)
   allPlayer=[]
@@ -329,3 +371,22 @@ def leaderboard(req):
   print("LeaderBoard Printed")
 
   return render(req,'leaderboard.html',{"leaderboard":leader,"user":req.session['user'],"code":req.session['code']})
+
+def stats(req, **primarykey):
+  quizId=primarykey['pk']
+  hostname=req.session['username']
+  game=list(Game.objects.filter(hostname=hostname,quizId=quizId))
+  if not game:
+    return render(req,'stats.html',{"quizId":quizId,"games":[]})
+  game=game[0]
+  gameIds=game.gameId.split(",")
+  gameTimes=game.gameTime.split(",")
+  games=[]
+  for i in range(len(gameIds)):
+    games.append([gameIds[i],gameTimes[i]])
+
+  games.sort(key = lambda x: x[1])
+  print(games)
+  return render(req,'stats.html',{"games":games,"quizId":quizId})
+
+
