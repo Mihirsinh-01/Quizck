@@ -49,7 +49,11 @@ def joinplayer(request):
           if re[gameid]['started']==1:
             messages.error(request,"Game has already started !!")
             return render(request, 'entergame.html', {'gameid': gameid,"username":username})
-          if Player.objects.filter(gameId=gameid,username=username).exists():
+          tmpplyr=Player.objects.filter(gameId=gameid,username=username)
+          if tmpplyr.exists():
+            if tmpplyr[0].banned == True:
+              messages.error(request,'This User is Banned from this Quiz')
+              return render(request, 'entergame.html', {'gameid': gameid,"username":username})
             messages.error(request,"Username already Exists !!!")
             return render(request, 'entergame.html', {'gameid': gameid,"username":username})
           playerLogin=Player(gameId=gameid,username=username)

@@ -44,7 +44,7 @@
       max-width: 450px;
     }
     .ui.list{
-      height: 200px;
+      height: 20%;
       overflow-y: scroll;
     }
     .ui.menu{
@@ -62,14 +62,23 @@
 
       </div>
 
+
       <div class="right menu">
         <div class="item">
         <a class="ui basic blue button" href="#"><i class="add user icon"></i>Profile Here</a>
         </div>
       </div>
 
+
     </div>
   </div>
+
+
+
+
+
+
+
 
 
 
@@ -82,40 +91,30 @@
     </div>
   </div>
 
-
-  <button type="submit" onclick="quiz('{{quizId}}')">Play Quiz</button>
-  <br><br>
-
-  <table class="ui celled table">
-    <thead>
-      <tr>
-        <th>Sr. No</th>
-        <th>Quiz Date</th>
-        <th>Quiz Code</th>
-        <th> </th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for gameId , gameTime in games %}
-        <tr>
-          <td>{{forloop.counter}}</td>
-          <td>{{gameTime}}</td>
-          <td>{{gameId}} </td>
-          <td><button type="submit" onclick="download('{{gameId}},{{quizId}}')">Download Result</button><br></td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-  
+  <div class="ui aligned center aligned grid">
+    <div class="column">
+      <h2 class="ui teal header">
+        <div class="content">
+          Leaderboard
+        </div>
+      </h2>
+      <div class="ui ordered list">
+        <b class="item">Getting Started</b>
+        <b class="item">Introduction</b>
+        <b class="item">Review</b>
+        <b class="item">Getting Started</b>
+        <b class="item">Introduction</b>
+        <b class="item">Review</b>
+        <b class="item">Getting Started</b>
+        <b class="item">Introduction</b>
+        <b class="item">Review</b>
+        <b class="item">Getting Started</b>
+        <b class="item">Introduction</b>
+        <b class="item">Review</b>
+        <b class="item">Getting Started</b>
+        <b class="item">Introduction</b>
+        <b class="item">Review</b>
+      </div>
+    </div>
+  </div>
 </body>
-
-
-<script>
-    function quiz(id){
-        window.location = "{% url 'quizPage' 1234 %}".replace(/1234/, id.toString());
-    }
-    function download(id){
-        window.location = "{% url 'download' 1234 %}".replace(/1234/, id.toString());
-    }
-</script>
