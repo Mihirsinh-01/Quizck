@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.core import serializers
 from player.models import Player
-from .forms import createQuizForm
+from host.forms import createQuizForm
 from host.models import Quiz, Game, Record
 from django.http import HttpResponse
 import json
@@ -45,7 +45,7 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="host/templates/firebase.json"
 cred=credentials.Certificate('host/templates/firebase.json')
 fireapp=firebase_admin.initialize_app(cred,{
   "databaseURL":"https://quizck-74e04-default-rtdb.firebaseio.com/"
-},name="host")
+},name="game")
 dbRef = db.reference()
 
 
@@ -212,11 +212,10 @@ def leaderboard(req):
         rec.save()
   
   players=dbRef.child("games").child(gameId).child("newplayer").get()
+
   lead=[]
   while True:
-    # print("players",len(players))
     lead=list(Record.objects.filter(quizId=quizId,gameId=gameId))
-    # print("leader",len(lead))
     if(len(lead)==len(players)-1):
       flag=False
       for x in lead:
@@ -249,52 +248,63 @@ def leaderboard(req):
 
   return render(req,'leaderboard.html',{"leaderboard":leader,"user":req.session['user'],"code":req.session['code']})
 
-def stats(req, **primarykey):
-  quizId=primarykey['pk']
-  hostname=req.session['username']
-  game=list(Game.objects.filter(hostname=hostname,quizId=quizId))
-  if not game:
-    return render(req,'stats.html',{"quizId":quizId,"games":[]})
-  game=game[0]
-  gameIds=game.gameId.split(",")
-  gameTimes=game.gameTime.split(",")
-  games=[]
-  for i in range(len(gameIds)):
-    games.append([gameIds[i],gameTimes[i]])
 
-  games.sort(key = lambda x: x[1])
-  print(games)
-  return render(req,'stats.html',{"games":games,"quizId":quizId})
 
 def download(req,**pk):
   game=pk['game'].split(",")
   gameId,quizId=game
   records=list(Record.objects.filter(gameId=gameId,quizId=quizId))
-
-  records=Quiz(Record.objects.filter(gameId=gameId,quizId=quizId))
-
-  df = pd.DataFrame()
+  questions=list(Quiz.objects.filter(hostname=req.session['username'],quizId=quizId))
   
+  df = pd.DataFrame()
   df1 = pd.DataFrame()
 
+  ques=[]
+  options=[]
+  for que in questions:
+    x=[]
+    y=[]
+    x.append(que.question)
+    x.append(que.answer)
+    x.append(que.marks)
+    y.append(que.option1)
+    y.append(que.option2)
+    y.append(que.option3)
+    y.append(que.option4)
+    ques.append(x)
+    options.append(y)
+  
+  df['Questions']=[x[0] for x in ques]
+  # df['Answers']=[x[1] for x in ques]
+  df['Marks']=[x[2] for x in ques]
+  ans=[]
+  for i in range(len(ques)):
+    ans.append(options[i][int(ques[i][1])-1])
+  df['Answers']=ans #[x for x in ans]
+
+  
   lists=[]
   for record in records:
     player=record.playername
     marks=record.marks.split(",")
+    total=0
+    for x in marks:
+      total+=int(x)
     marks.insert(0, player)
+    marks.insert(len(marks)-1, total)
     lists.append(marks)
   
   s="Question"
   if lists:
     df1['Player Name']=[x[0] for x in lists]
-    for i in range(1,len(lists)+1):
+    for i in range(1,len(lists)):
       df1[s+str(i)] = [x[i] for x in lists]
-    
+    df1['Total Marks']=[x[len(lists)] for x in lists]
     with BytesIO() as b:
         # Use the StringIO object as the filehandle.
         writer = pd.ExcelWriter(b, engine='xlsxwriter')
-        df1.to_excel(writer, sheet_name='Sheet1')
-        df1.to_excel(writer, sheet_name='Sheet2')
+        df.to_excel(writer, sheet_name='Questions')
+        df1.to_excel(writer, sheet_name='Marksheet')
         writer.save()
         # Set up the Http response.
         filename = 'django_simple.xlsx'
@@ -306,10 +316,10 @@ def download(req,**pk):
         return response
     
     print(df1)
-    # return HttpResponse("hiii")
+    return HttpResponse("hiii")
   else:
     print("no data")
-  
+    return HttpResponse("No data is found")
 
 
 

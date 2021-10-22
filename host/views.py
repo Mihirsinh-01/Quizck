@@ -135,7 +135,23 @@ def done(req):
           quiz.save()
 
     return redirect('dashboard')
+    
+def stats(req, **primarykey):
+  quizId=primarykey['pk']
+  hostname=req.session['username']
+  game=list(Game.objects.filter(hostname=hostname,quizId=quizId))
+  if not game:
+    return render(req,'stats.html',{"quizId":quizId,"games":[]})
+  game=game[0]
+  gameIds=game.gameId.split(",")
+  gameTimes=game.gameTime.split(",")
+  games=[]
+  for i in range(len(gameIds)):
+    games.append([gameIds[i],gameTimes[i]])
 
+  games.sort(key = lambda x: x[1])
+  print(games)
+  return render(req,'stats.html',{"games":games,"quizId":quizId})
 
 def quizPage(req, **primarykey):
     quizId = primarykey['pk']

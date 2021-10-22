@@ -14,7 +14,7 @@ urlpatterns = [
     path('leaderboard',views.leaderboard,name='leaderboard'),
     path('temp',views.temp,name="temp"),
     path('tirth',views.tirth,name="tirth"),
-    path('stats/<int:pk>',views.stats,name="stats"),
+    # path('stats/<int:pk>',views.stats,name="stats"),
     path('download/<str:game>',views.download,name="download"),
     path('removed',views.removed,name="removed")
 ]

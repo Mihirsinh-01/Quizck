@@ -53,21 +53,38 @@
       <h1 class="ui inverted header">Leaderboard</h1>
       <img class="centered large ui image" src="{% static 'winner.svg' %}">
       {% ifequal user "admin" %}
-      <a id="showQ" class="ui huge primary button">
+      <a id="next" class="ui huge primary button">
       Next<i class="right arrow icon"></i>
       </a>
       {% endifequal %}
     </div>
   </div>
-  <h1>Current LeaderBoard</h1><hr><br>
-  {% for top in leaderboard %}
-  <i>{{ top.0 }}</i>------------ 
-  <b>{{ top.1 }}</b>
-  <br>
-  {% endfor %}
-  {% ifequal user "admin" %}
-  <button id="next">Next</button>
-  {% endifequal %}
+  <div class="centered ui segment">
+
+    <table class="ui very basic collapsing celled table">
+  <thead>
+    <tr><th><h2>Players</h2></th>
+    <th><h2>Marks</h2></th>
+  </tr></thead>
+  <tbody>
+    {% for top in leaderboard %}
+    <tr>
+      <td>
+        <h4 class="ui image header">
+          <img src="https://avatars.dicebear.com/v2/avataaars/{{top.0}}.svg" class="ui huge rounded image">
+          <div class="content">
+            <h3>{{top.0}}</h3>
+        </div>
+      </h4></td>
+      <td>
+        {{top.1}}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+  </div>
   <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script>
