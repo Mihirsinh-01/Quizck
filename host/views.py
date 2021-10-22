@@ -75,7 +75,10 @@ def quiz(req):
 def createQuiz(req):
     if req.method == 'POST':
         form = createQuizForm(req.POST)
+        print("form")
+        print(form)
         if form.is_valid():
+            print("form is")
             cnt=Quiz.objects.filter(quizId=req.session['quizId'],hostname=req.session['username']).count()
             questionNumber = cnt+1
             question = req.POST['question']
@@ -103,6 +106,7 @@ def createQuiz(req):
                         timer=timer)
 
             quiz.save()
+            print("next")
             form = createQuizForm()
     else:
         form = createQuizForm()
@@ -131,7 +135,7 @@ def done(req):
 
           quiz = Quiz(hostname=username,quizId=quizId,questionNumber=questionNumber,question=question,option1=option1,option2=option2,option3=option3,option4=option4,answer=answer,marks=marks,timer=timer)
 
-          
+          print("done")
           quiz.save()
 
     return redirect('dashboard')

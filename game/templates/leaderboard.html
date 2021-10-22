@@ -39,12 +39,15 @@
     body > .grid {
       height: 100%;
     }
-    .column {
-      max-width: 450px;
-    }
     .ui.list{
       height: 20%;
       overflow-y: scroll;
+    }
+    td{
+      width: 50em;
+    }
+    #next{
+      margin-top: 1em;
     }
 {% endblock %}
 {% block body %}
@@ -59,30 +62,35 @@
       {% endifequal %}
     </div>
   </div>
-  <div class="centered ui segment">
-
-    <table class="ui very basic collapsing celled table">
-  <thead>
-    <tr><th><h2>Players</h2></th>
-    <th><h2>Marks</h2></th>
-  </tr></thead>
-  <tbody>
-    {% for top in leaderboard %}
-    <tr>
-      <td>
-        <h4 class="ui image header">
-          <img src="https://avatars.dicebear.com/v2/avataaars/{{top.0}}.svg" class="ui huge rounded image">
-          <div class="content">
-            <h3>{{top.0}}</h3>
-        </div>
-      </h4></td>
-      <td>
-        {{top.1}}
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+  <div class="ui two column padded grid">
+    <div class="column" style="background-color: red;">hii</div>
+    <div class=" container column" style="background-color: green;">
+    <div class="centered ui segment">
+      <table class="ui very basic collapsing celled table">
+        <thead>
+          <tr><th><h2>Players</h2></th>
+          <th><h2>Marks</h2></th>
+        </tr></thead>
+        <tbody>
+          {% for top in leaderboard %}
+          <tr>
+            <td>
+              <h4 class="ui image header">
+                <img src="https://avatars.dicebear.com/v2/avataaars/{{top.0}}.svg" class="ui huge rounded image">
+                <div class="content">
+                  <h3>{{top.0}}</h3>
+              </div>
+            </h4></td>
+            <td>
+              {{top.1}}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </div>
+  </div>
+  
 
   </div>
   <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>

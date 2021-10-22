@@ -1,17 +1,109 @@
-{% load crispy_forms_tags %}
-<form action="" method="post">
+<head>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js" integrity="sha512-dqw6X88iGgZlTsONxZK9ePmJEFrmHwpuMrsUChjAw1mRUhUITE5QU9pkcSox+ynfLhL15Sv2al5A0LVyDCmtUw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>  <style type="text/css">
+  @media only screen and (max-width: 200px) {
+      .masthead.segment {
+        min-height: 150px;
+      }
+      .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+      }
+      .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+      }
+    }
+    .masthead.segment {
+      min-height: 50px;
+      padding: 1em 0em;      
+    }
+    .masthead h1.ui.header {
+      margin-top: 2em;
+      margin-bottom: 0em;
+      font-size: 5em;
+      font-weight: normal;
+    }
+    .masthead h2 {
+      font-size: 2em;
+      font-weight: normal;
+      margin-bottom: 2em;
+    }
+    #head{
+      margin-bottom:1.5em;
+    }
+    body {
+      background-color: #DADADA;
+      font-family:'Times New Roman';
+    }
+    body > .grid {
+      height: 100%;
+    }
+    .column {
+      max-width: 450px;
+    }
+    .ui.list{
+      height: 200px;
+      overflow-y: scroll;
+    }
+    .ui.menu{
+      height: 80px;
+    }
+    .field{
+      background-color:red;
+      width: 20em;
+    }
+  </style>
+</head>
+
+<body>
+  <form class="ui form" action="" method="POST">
     {% csrf_token %}
-    {{ form|crispy }}
-    <p>
-        {{ field.label_tag }}<br>
-        {{ field }}
-        {% if field.help_text %}
-        <small style="color: grey">{{ field.help_text }}</small>
-        {% endif %}
-        {% for error in field.errors %}
-        <p style="color: red">{{ error }}</p>
-        {% endfor %}
-    </p>
-    <input type="submit" value="Next Question" formaction="createQuiz">
-    <input type="submit" value="Done" formaction="done">
-</form>
+    <div class="field">
+      <label>Question</label>
+      <input id="id_question" type="text" name="question" placeholder="Enter Question">
+    </div>
+    <div class="field">
+      <label>Option1</label>
+      <input id="id_option1" type="text" name="option1" placeholder="">
+    </div>
+    <div class="field">
+      <label>Option2</label>
+      <input id="id_option2" type="text" name="option2" placeholder="">
+    </div>
+    <div class="field">
+      <label>Option3</label>
+      <input id="id_option3" type="text" name="option3" placeholder="">
+    </div>
+    <div class="field">
+      <label>Option4</label>
+      <input id="id_option4" type="text" name="option4" placeholder="">
+    </div>
+
+    <div class="field">
+      <label>Answer</label>
+      <div class="ui selection dropdown">
+          <input type="hidden" name="answer" id="id_answer">
+          <i class="dropdown icon"></i>
+          <div class="default text">Select Answer</div>
+          <div class="menu">
+              <div class="item" data-value="1">Option1</div>
+              <div class="item" data-value="2">Option2</div>
+              <div class="item" data-value="3">Option3</div>
+              <div class="item" data-value="4">Option4</div>
+          </div>
+      </div>
+    </div>
+
+
+    <input type="submit" class="ui button" value="Next Question" formaction="createQuiz">
+    <input type="submit" class="ui button" value="Done" formaction="done">
+  </form>
+</body>
+
+<script>
+  $('.ui.dropdown').dropdown();
+</script>
+
+

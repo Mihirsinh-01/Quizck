@@ -102,7 +102,6 @@ def temp(req):
     df['Country'] = list1[1::2]
 
 
-    # df['Player']
 
     with BytesIO() as b:
         # Use the StringIO object as the filehandle.
@@ -215,6 +214,7 @@ def leaderboard(req):
 
   lead=[]
   while True:
+    print("infinite ........")
     lead=list(Record.objects.filter(quizId=quizId,gameId=gameId))
     if(len(lead)==len(players)-1):
       flag=False
@@ -223,8 +223,12 @@ def leaderboard(req):
           flag=True
       if not flag:
         break
+      else:
+        time.sleep(1)
     else:
       time.sleep(1)
+
+
   allPlayer=[]
   for item in lead:
     allmarks=item.marks.split(",")
@@ -236,15 +240,29 @@ def leaderboard(req):
     else:
       tot=str(total)+" (+"+str(allmarks[len(allmarks)-1])+")"
     allPlayer.append([total,[item.playername,tot]])
-    # allPlayer[total]=[item.playername,tot]
   
   x=allPlayer.sort(reverse=True)
-  # x=dict(sorted(allPlayer.items(),reverse=True))
   print(x)
   leader=[y for x,y in allPlayer] 
   print(leader)
 
   print("LeaderBoard Printed")
+  qz=Quiz.objects.filter(hostname=req.session['hostname'],quizId=req.session['quizId'],questionNumber=req.session["questionNumber"])[0]
+  print(qz.answer)
+  print(type(qz.answer))
+  ans=""
+  if qz.answer=='1':
+    ans=qz.option1
+  elif qz.answer=='2':
+    ans=qz.option3
+  elif qz.answer=='3':
+    ans=qz.option3
+  elif qz.answer=='4':
+    ans=qz.option4
+  else:
+    print("Something Wrong")
+  print(ans)
+  print("Quiz Printed")
 
   return render(req,'leaderboard.html',{"leaderboard":leader,"user":req.session['user'],"code":req.session['code']})
 
@@ -290,16 +308,21 @@ def download(req,**pk):
     total=0
     for x in marks:
       total+=int(x)
+    print(total)
+    print(marks)
     marks.insert(0, player)
-    marks.insert(len(marks)-1, total)
+    marks.append(total)
     lists.append(marks)
   
   s="Question"
   if lists:
+    print(lists)
+    print(len(lists))
     df1['Player Name']=[x[0] for x in lists]
-    for i in range(1,len(lists)):
+    for i in range(1,len(lists[0])-1):
       df1[s+str(i)] = [x[i] for x in lists]
-    df1['Total Marks']=[x[len(lists)] for x in lists]
+    df1['Total Marks']=[x[len(lists[0])-1] for x in lists]
+    
     with BytesIO() as b:
         # Use the StringIO object as the filehandle.
         writer = pd.ExcelWriter(b, engine='xlsxwriter')
