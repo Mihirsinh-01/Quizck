@@ -33,6 +33,7 @@
       margin-bottom:1.5em;
     }
     body {
+      background-image: radial-gradient(#EAECC6, #2BC0E4);
       background-color: #DADADA;
       font-family:'Times New Roman';
     }
@@ -46,25 +47,64 @@
     td{
       width: 50em;
     }
-    #next{
-      margin-top: 1em;
-    }
 {% endblock %}
 {% block body %}
 <div id="head" class="ui inverted vertical masthead center aligned segment ">
     <div class="ui text container">      
-      <h1 class="ui inverted header">Leaderboard</h1>
-      <img class="centered large ui image" src="{% static 'winner.svg' %}">
+      <h1 class="ui inverted header">Discussions & Leaderboard</h1><br>
+      <div class="ui four colum centered grid">
+        <div class="eight wide column">
+          <img class="massive ui image" src="{% static 'discuss.svg' %}">
+        </div>
+        <div class="eight wide column">
+          <img class="massive ui image" src="{% static 'winner.svg' %}">
+        </div>            
+      </div>
+      <br>
       {% ifequal user "admin" %}
-      <a id="next" class="ui huge primary button">
-      Next<i class="right arrow icon"></i>
+      <a id="next" class="ui huge teal animated button" tabindex="0">
+        <div class="visible content" style="padding-left:1em;padding-right:1em;">Next</div>
+        <div class="hidden content">
+          <i class="right arrow icon"></i>
+        </div>
       </a>
+      
       {% endifequal %}
     </div>
   </div>
   <div class="ui two column padded grid">
-    <div class="column" style="background-color: red;">hii</div>
-    <div class=" container column" style="background-color: green;">
+    <div class="column">
+      <div class="ui centered segment container">
+        {{quiz.question}}
+      </div>
+      <div class="list">
+        <ul class="ui padded grid">
+          <li class="ui segment seven wide column" style="margin-bottom:0px;margin-top:0px;">{{quiz.option1}}</li>
+          <span class="two wide column"></span>
+          <li class="ui segment seven wide column" style="margin-top:0px;margin-bottom:0px;">{{quiz.option2}}</li>
+          
+          <li class="ui segment seven wide column" style="margin-bottom:0px;margin-top:0px;">{{quiz.option3}}</li>
+          <span class="two wide column"></span>
+          <li class="ui segment seven wide column" style="margin-top:0px;margin-bottom:0px;">{{quiz.option4}}</li>
+        </ul>        
+      </div>
+      <br>
+
+
+
+
+        
+      <div class="ui padded grid">
+        <div class="two wide column">
+          <div class="ui huge orange right pointing basic label">Answer</div>
+        </div>
+        <div class="eight wide column">
+          <div class="ui huge green basic label">{{answer}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class=" container column">
     <div class="centered ui segment">
       <table class="ui very basic collapsing celled table">
         <thead>

@@ -104,7 +104,6 @@ def temp(req):
 
 
     with BytesIO() as b:
-        # Use the StringIO object as the filehandle.
         writer = pd.ExcelWriter(b, engine='xlsxwriter')
         df.to_excel(writer, sheet_name='Sheet1')
         writer.save()
@@ -187,9 +186,6 @@ def leaderboard(req):
   gameId=req.session['code']
   host=req.session['hostname']
   quizId=req.session['quizId']
-
-  
-
   ques=list(Quiz.objects.filter(quizId=quizId,questionNumber=req.session['questionNumber'],hostname=host))
   if len(ques)==0:
     return HttpResponse("<h1>Questions Exceeded in Leaderboard</h1>")
@@ -262,9 +258,8 @@ def leaderboard(req):
   else:
     print("Something Wrong")
   print(ans)
-  print("Quiz Printed")
 
-  return render(req,'leaderboard.html',{"leaderboard":leader,"user":req.session['user'],"code":req.session['code']})
+  return render(req,'leaderboard.html',{"leaderboard":leader,"user":req.session['user'],"code":req.session['code'],'quiz':qz,'answer':ans})
 
 
 

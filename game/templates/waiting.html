@@ -38,9 +38,6 @@
     body > .grid {
       height: 100%;
     }
-    .column {
-      max-width: 450px;
-    }
     .ui.list{
       height: 20%;
       overflow-y: scroll;
@@ -60,9 +57,17 @@
       {% endifequal %}
     </div>
   </div>
-<div>
-
-  <div class="ui segment container" id="fire"></div>
+<div class="ui grid">
+  <div class="ui two wide column vertical centered statistic">
+    <div class="value">
+      <i class="users icon"></i>
+      <span id="total">0</span>
+    </div>
+    <div class="label">
+      Players
+    </div>
+  </div>
+  <div class="ui twelve wide column container segment" id="fire"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
@@ -98,6 +103,7 @@ var globalAll=[];
         var all=child.val();
         globalAll=all;
         var content="";
+        $('#total').text(all.length-1);
         for(var i=1;i<all.length;i++){
           if(user == "admin"){
             var tmp='<a onclick="clicked(\''+all[i]+'\')" class="ui huge '+getRandomColor()+' label" id="'+all[i]+'">';
@@ -125,6 +131,7 @@ var globalAll=[];
       }
       var all=snapshot.val();
       globalAll=all;
+      $('#total').text(all.length-1);
       for(var i=0;i<cont.length;i++){
         if(!all.includes(cont[i])){
           if(user=="player" && cont[i]=="{{playername}}"){
