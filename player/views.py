@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from .models import Player
 from host.models import Quiz
 from .forms import playerForm
-from django.http import HttpResponse
+from django.http import HttpResponse,Http404
 from firebase import firebase
 import firebase_admin
 from firebase_admin import db, credentials
@@ -12,8 +12,6 @@ import json
 import os
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="host/templates/firebase.json"
-
-
 
 firebaseConfig = {
     "apiKey": "AIzaSyDNn1-wkMm-g0cH2BKQ6XjdLTl6ldds8ZE",
@@ -29,7 +27,6 @@ firebaseConfig = {
 try:
     app = firebase_admin.get_app("Quizck")
 except ValueError as e:
-  print("Inside Value Error")
   cred = credentials.Certificate('host/templates/firebase.json')
   firebase_admin.initialize_app(cred,firebaseConfig)
 
@@ -43,8 +40,12 @@ def joinplayer(request):
       form = playerForm(request.POST)
       if form.is_valid():
         gameid=request.POST['gameid']
-        username=request.POST['username']        
-        re=dbRef.child("games").get()
+        username=request.POST['username']
+        re=""
+        try:
+          re=dbRef.child("games").get()
+        except:
+          raise Http404
         if re and gameid in re:
           if re[gameid]['started']==1:
             messages.error(request,"Game has already started !!")
@@ -64,14 +65,17 @@ def joinplayer(request):
             nwplyr.append(username)
           except:
             nwplyr=[username]
-          dbRef.child("games").child(gameid).child("newplayer").set(nwplyr)
+          
+          try:
+            dbRef.child("games").child(gameid).child("newplayer").set(nwplyr)
+          except:
+            raise Http404
           
           request.session['user']="player"
           request.session['playername']=username
           return redirect('waiting')
         else:
           messages.error(request,"No game with such ID")
-        
   else:
       form = playerForm()
 

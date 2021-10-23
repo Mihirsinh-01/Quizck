@@ -1,17 +1,15 @@
-
+{% load static %}
 <html>
   <head>
-    
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
       <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js" integrity="sha512-dqw6X88iGgZlTsONxZK9ePmJEFrmHwpuMrsUChjAw1mRUhUITE5QU9pkcSox+ynfLhL15Sv2al5A0LVyDCmtUw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
       body {
-          background-color: #616161
+        background-color: #616161
       }
-
       label.btn {
           padding: 18px 60px;
           white-space: normal;
@@ -22,19 +20,16 @@
           -moz-transition-duration: .3s;
           -o-transition-duration: .3s
       }
-
       label.btn:hover {
           text-shadow: 0 3px 2px rgba(0, 0, 0, 0.4);
           -webkit-transform: scale(1.1);
           -moz-transform: scale(1.1);
-          -o-transform: scale(1.1)
+          -o-transform: scale(1.1);
       }
-
       label.btn-block {
           text-align: left;
           position: relative
       }
-
       label .btn-label {
           position: absolute;
           left: 0;
@@ -142,6 +137,11 @@
               -webkit-transform: translate(0px, 0px)
           }
       }
+      .masthead h1.ui.header {
+      margin-bottom: 0em;
+      font-size: 5em;
+      font-weight: normal;
+    }
 
       .modal-header {
           background-color: transparent;
@@ -150,7 +150,7 @@
 
       .modal-body {
           min-height: 300px;
-          max-height: 75%;
+          max-height: 65%;
           overflow-y:scroll;
           overflow-x:hidden;
       }
@@ -161,22 +161,35 @@
       .btn-danger:hover{
         background-color:orange;
       }
+      .ui.grid{
+      margin-top:0px;
+    }
+    body > .grid {
+      height: 100%;
+    }
     </style>
   </head>
 
   <body>
-    <center style="margin-top:20px;">
-    <form id="form" action="../quiz" method="POST">
-      {% csrf_token %}
-      <button type="submit" class="ui teal large button" id="create">
-        <i class="plus icon"></i>
-        Create Quiz
-      </button>
-    </form>
-    </center>
-    <div class="container-fluid">
-        <div class="modal-dialog">
-            <div class="modal-content">
+    <div class="ui grid">
+      <div class="ui seven wide column inverted vertical masthead center aligned segment" style="height:100%">
+        <h1 class="ui inverted header" style="margin-top:2em; margin-bottom:1em;">Dashboard</h1><br>
+        <img class="ui centered big image" src="{% static 'dashboard.svg' %}">
+      </div>
+
+      <div class="ui nine wide column">    
+        <center style="margin-top:20px;">
+        <form id="form" action="../quiz" method="POST">
+          {% csrf_token %}
+          <button type="submit" class="ui teal large button" id="create">
+            <i class="plus icon"></i>
+            Create Quiz
+          </button>
+        </form>
+        </center>
+        <div class="container-fluid">
+            <div class="modal-dialog">
+              <div class="modal-content">
                 <div class="modal-header">
                     <center><h3>Select Quiz</h3></center>
                 </div>
@@ -191,8 +204,10 @@
                     {% endfor %}
                   </div>
                 </div>
+              </div>
             </div>
         </div>
+      </div>
     </div>
   </body>
 
