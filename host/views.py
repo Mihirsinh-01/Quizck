@@ -154,6 +154,7 @@ def stats(req, **primarykey):
     games.append([gameIds[i],gameTimes[i]])
 
   games.sort(key = lambda x: x[1])
+  games.reverse()
   print(games)
   return render(req,'stats.html',{"games":games,"quizId":quizId})
 
@@ -184,7 +185,6 @@ def quizPage(req, **primarykey):
       gameTime.append(dt.strftime("%b %d %Y %H:%M:%S"))
       game.gameId=",".join(gameId)
       game.gameTime=",".join(gameTime)
-
       game.save()
 
     dbRef.child("games").child(code).set({
@@ -194,11 +194,13 @@ def quizPage(req, **primarykey):
       'started':0
     })
 
-    return render(req, 'quizPage.html', {
-      "sec": 105,
-      "query": qz,
-      "code": code
-    })
+    return redirect('waiting')
+
+    # return render(req, 'quizPage.html', {
+    #   "sec": 105,
+    #   "query": qz,
+    #   "code": code
+    # })
 
 
 globReq = ""

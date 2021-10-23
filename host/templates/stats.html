@@ -1,8 +1,7 @@
-<head>
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js" integrity="sha512-dqw6X88iGgZlTsONxZK9ePmJEFrmHwpuMrsUChjAw1mRUhUITE5QU9pkcSox+ynfLhL15Sv2al5A0LVyDCmtUw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>  <style type="text/css">
-  @media only screen and (max-width: 200px) {
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+@media only screen and (max-width: 200px) {
       .masthead.segment {
         min-height: 150px;
       }
@@ -20,7 +19,7 @@
       padding: 1em 0em;      
     }
     .masthead h1.ui.header {
-      margin-top: 2em;
+      margin-top: 0.2em;
       margin-bottom: 0em;
       font-size: 5em;
       font-weight: normal;
@@ -40,9 +39,6 @@
     body > .grid {
       height: 100%;
     }
-    .column {
-      max-width: 450px;
-    }
     .ui.list{
       height: 200px;
       overflow-y: scroll;
@@ -50,42 +46,28 @@
     .ui.menu{
       height: 80px;
     }
-  </style>
-</head>
-<body>
-
-  <div class="ui fixed inverted menu">
-    <div class="ui container">
-      <div style="color:white; background-color: blue; text-align: center;">
-        <span style="font-size:30px;">Quizck</span>
-        <span style="font-size:20px;"> - Play, Compete and Learn</span>
-
+    #playQ{
+      margin-top:0.5em;
+    }
+    #result{
+      height: 45%;
+      overflow-y:scroll;
+    }
+{% endblock %}
+{% block body %}
+<div id="head" class="ui inverted vertical masthead center aligned segment ">
+    <div class="ui text container">      
+      <h1 class="ui inverted header">Statistics</h1><br>
+      <div class="ui two colum centered grid">
+        <img class="large ui image" src="{% static 'files.svg' %}">        
       </div>
-
-      <div class="right menu">
-        <div class="item">
-        <a class="ui basic blue button" href="#"><i class="add user icon"></i>Profile Here</a>
-        </div>
-      </div>
-
+      <br>
     </div>
+    <a id="playQ" onclick="quiz('{{quizId}}')" class="ui huge primary button">
+      Play Quiz <i class="right arrow icon"></i>
+      </a>
   </div>
-
-
-
-
-
-  <div id="head" class="ui inverted vertical masthead center aligned segment ">
-    <div class="ui text container">
-      <h1 class="ui inverted header">Quizck</h1>
-      <h2 class="ui inverted">Play, Compete and Learn</h2>
-    </div>
-  </div>
-
-
-  <button type="submit" onclick="quiz('{{quizId}}')">Play Quiz</button>
-  <br><br>
-
+<div class="ui container" id="result">
   <table class="ui celled table">
     <thead>
       <tr>
@@ -101,17 +83,16 @@
           <td>{{forloop.counter}}</td>
           <td>{{gameTime}}</td>
           <td>{{gameId}} </td>
-          <td><button type="submit" onclick="download('{{gameId}},{{quizId}}')">Download Result</button><br></td>
+          <td><button class="ui teal button" onclick="download('{{gameId}},{{quizId}}')">
+            Download Result&nbsp;
+            <i class="download icon"></i>
+            </button><br></td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
-
-  
-</body>
-
-
-<script>
+</div>
+  <script>
     function quiz(id){
         window.location = "{% url 'quizPage' 1234 %}".replace(/1234/, id.toString());
     }
@@ -119,3 +100,4 @@
         window.location = "{% url 'download' 1234 %}".replace(/1234/, id.toString());
     }
 </script>
+{% endblock %}

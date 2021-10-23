@@ -171,12 +171,16 @@ def waiting(req):
 
 def showQuiz(req):
   questionNumber=req.session['questionNumber']+1
+  # questionNumber=1
   req.session['questionNumber']=questionNumber
   cnt=Quiz.objects.filter(hostname=req.session['hostname'],quizId=req.session['quizId']).count()
   print("Count is ",cnt)
   print("Current Question is ",questionNumber)
   if questionNumber>cnt:
-    return redirect('tryy')
+    if req.session['user']=="admin":
+      return redirect('dashboard')
+    else:
+      return redirect('join')
   else:
     qz=Quiz.objects.filter(hostname=req.session['hostname'],quizId=req.session['quizId'],questionNumber=questionNumber)[0]
     return render(req,"showQuiz.html",{"quiz":qz})

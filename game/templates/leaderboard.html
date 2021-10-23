@@ -37,6 +37,10 @@
       background-color: #DADADA;
       font-family:'Times New Roman';
     }
+    ::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+    }
     body > .grid {
       height: 100%;
     }
@@ -79,29 +83,19 @@
       </div>
       <div class="list">
         <ul class="ui padded grid">
-          <li class="ui segment seven wide column" style="margin-bottom:0px;margin-top:0px;">{{quiz.option1}}</li>
-          <span class="two wide column"></span>
-          <li class="ui segment seven wide column" style="margin-top:0px;margin-bottom:0px;">{{quiz.option2}}</li>
           
-          <li class="ui segment seven wide column" style="margin-bottom:0px;margin-top:0px;">{{quiz.option3}}</li>
-          <span class="two wide column"></span>
-          <li class="ui segment seven wide column" style="margin-top:0px;margin-bottom:0px;">{{quiz.option4}}</li>
+          <li class="ui segment seven wide column {% ifequal answer quiz.option1%}green{% endifequal %}" style="margin-top:0px;margin-bottom:0px;">{{quiz.option1}}</li>
+          <div class="ui one wide column"></div>
+          <li class="ui segment seven wide column {% ifequal answer quiz.option2%}green{% endifequal %}" style="margin-top:0px;margin-bottom:0px;">{{quiz.option2}}</li>
+          <div class="ui sixteen wide column"></div>
+          <li class="ui segment seven wide column {% ifequal answer quiz.option3%}green{% endifequal %}" style="margin-top:0px;margin-bottom:0px;">{{quiz.option3}}</li>
+          <div class="ui one wide column"></div>
+          <li class="ui segment seven wide column {% ifequal answer quiz.option4%}green{% endifequal %}" style="margin-top:0px;margin-bottom:0px;">{{quiz.option4}}</li>
+          
         </ul>        
       </div>
       <br>
 
-
-
-
-        
-      <div class="ui padded grid">
-        <div class="two wide column">
-          <div class="ui huge orange right pointing basic label">Answer</div>
-        </div>
-        <div class="eight wide column">
-          <div class="ui huge green basic label">{{answer}}</div>
-        </div>
-      </div>
     </div>
 
     <div class=" container column">

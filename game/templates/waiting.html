@@ -67,7 +67,16 @@
       Players
     </div>
   </div>
-  <div class="ui twelve wide column container segment" id="fire"></div>
+  <div class="ui twelve wide column container segment">
+    {% ifequal user "admin" %}
+    <div class="ui info message">
+      <div class="header">
+        Message: Click on the player to Remove
+      </div>
+    </div>
+    {% endifequal %}
+    <span id="fire"></span>
+  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
@@ -106,13 +115,13 @@ var globalAll=[];
         $('#total').text(all.length-1);
         for(var i=1;i<all.length;i++){
           if(user == "admin"){
-            var tmp='<a onclick="clicked(\''+all[i]+'\')" class="ui huge '+getRandomColor()+' label" id="'+all[i]+'">';
+            var tmp='<a onclick="clicked(\''+all[i]+'\')" class="ui huge '+getRandomColor()+' label" id="'+all[i]+'" data-tooltip="Remove '+all[i]+'">';
             tmp+='<img class="ui right spaced huge image" src="https://avatars.dicebear.com/v2/avataaars/'+all[i]+'.svg"><span class="test">';      
             tmp+=all[i]+'</span></a>';
             content+=tmp;
           }
           else{
-            var tmp='<a class="ui huge '+getRandomColor()+' label" id="'+all[i]+'">';
+            var tmp='<a class="ui huge '+getRandomColor()+' label" id="'+all[i]+'" >';
             tmp+='<img class="ui right spaced huge image" src="https://avatars.dicebear.com/v2/avataaars/'+all[i]+'.svg"><span class="test">';      
             tmp+=all[i]+'</span></a>';
             content+=tmp;
@@ -144,7 +153,7 @@ var globalAll=[];
       for(var i=1;i<all.length;i++){
         if(!cont.includes(all[i])){
           if(user == "admin"){
-            var tmp='<a onclick="clicked(\''+all[i]+'\')" class="ui huge '+getRandomColor()+' label" id="'+all[i]+'">';
+            var tmp='<a onclick="clicked(\''+all[i]+'\')" class="ui huge '+getRandomColor()+' label" id="'+all[i]+'" data-tooltip="Remove '+all[i]+'">';
             tmp+='<img class="ui right spaced huge image" src="https://avatars.dicebear.com/v2/avataaars/'+all[i]+'.svg"><span class="test">';      
             tmp+=all[i]+'</span></a>'; 
             $('#fire').append(tmp);
@@ -166,8 +175,6 @@ var globalAll=[];
 
   function clicked(plyr){
     console.log(plyr);
-    alert("oyy"+plyr);
-    // dbRef.child("games/"+code+"newplayer").remove();
     var allData=globalAll;
     const index = allData.indexOf(plyr);
     if (index > -1) {
