@@ -208,3 +208,10 @@ def quizPage(req, **primarykey):
       'started':0
     })
     return redirect('waiting')
+
+def logout(req):
+  for key in list(req.session.keys()):
+    if not key.startswith("_"):
+      del req.session[key]
+
+  return redirect('login')

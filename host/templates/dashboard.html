@@ -173,11 +173,20 @@
   <body>
     <div class="ui grid">
       <div class="ui seven wide column inverted vertical masthead center aligned segment" style="height:100%">
+        
         <h1 class="ui inverted header" style="margin-top:2em; margin-bottom:1em;">Dashboard</h1><br>
         <img class="ui centered big image" src="{% static 'dashboard.svg' %}">
       </div>
 
-      <div class="ui nine wide column">    
+      <div class="ui nine wide column"> 
+        <div class="ui container">
+          <div class="ui large secondary pointing menu" style="border-width:0px;">
+            <div class="right item">
+              <a href="{% url 'login' %}" class="ui inverted button">Logout</a>
+            </div>
+            
+          </div>
+        </div>   
         <center style="margin-top:20px;">
         <form id="form" action="../quiz" method="POST">
           {% csrf_token %}

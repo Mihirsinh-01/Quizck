@@ -59,7 +59,7 @@
           Create a new account
         </div>
       </h2>
-      <form class="ui large form" action="" method="POST">
+      <form id="signUpForm" class="ui large form" action="" method="POST">
         {% csrf_token %}
         <div class="ui stacked segment">
           <div class="field">
@@ -69,10 +69,11 @@
             </div>
           </div>
           <div class="field">
-            <div class="ui left icon input">
+            <div id="emailotp" class="ui left icon input">
               <i class="envelope icon"></i>
-              <input type="text" name="emailId" value="{{emailId}}" placeholder="E-mail address" required>
-            </div>
+              <input id="emailId" type="text" name="emailId" value="{{emailId}}" placeholder="E-mail address" required>
+              <div class="ui basic teal button" id="sendEmail" style="margin-left:1em;" onclick="sendEmail()">Send OTP</div>
+            </div>            
           </div>
           <div class="field">
             <div class="ui left icon input">
@@ -80,12 +81,12 @@
               <input type="password" name="password" value="{{password}}" placeholder="Password" required>
             </div>
           </div>
-          <button class="ui fluid large teal submit button" type="submit">Sign Up</button>
+          <button class="ui fluid large teal submit button" onclick="verify()">Sign Up</button>
         </div>
       </form>
       {% if messages %}
         <div class="ui error message">
-          <ul class="list">
+          <ul class="list" id="messages">
             {% for message in messages %}
               <li>{{ message }}</li>
             {% endfor %}
@@ -98,4 +99,43 @@
       </div>
     </div>
   </div>
+  <script src="https://smtpjs.com/v3/smtp.js"></script>
+  <script>
+    var otp;
+    var email;
+    function sendEmail() {
+      console.log("Inside Send Email");
+      otp=Math.floor(1000 + Math.random() * 9000);
+      email=$('#emailId').val();
+      if(!email)return false;
+      Email.send({
+      Host: "smtp.gmail.com",
+      Username : "noreply.quizck@gmail.com",
+      Password : "alpqpsj34hdf7343n",
+      To : email,
+      From : "noreply.quizck@gmail.com",
+      Subject : "Confirm your Email for Quizck!!",
+      Body : "Please Enter this OTP "+otp+""
+      }).then(()=>{
+        $('#sendEmail').remove();
+        $('#emailotp').append('<div class="ui"><input id="otp" type="text" name="otp" placeholder="OTP" style="margin-left:0.3em;" required></div>');        
+        console.log("Mail Sent");
+      }        
+      );
+    }
+
+    function verify(){
+      var current_email = $('#emailId').val();
+      var current_otp = $('#otp').val();
+      if(current_otp==otp && current_email==email){
+        
+        $('#signUpForm').submit();
+      }
+      else{
+        $('#messages').append("<li>Incorrect OTP</li>");
+      }
+      
+    }
+    // $('#sendEmail').click(sendEmail());
+  </script>
 {% endblock %}

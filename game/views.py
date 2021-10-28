@@ -206,12 +206,10 @@ def leaderboard(req):
     ans=qz.option4
   else:
     raise Http404
-  
   try:
     return render(req,'leaderboard.html',{"leaderboard":leader,"user":req.session['user'],"code":req.session['code'],'quiz':qz,'answer':ans})
   except:
     raise Http404
-
 
 def download(req,**pk):
   game=""
