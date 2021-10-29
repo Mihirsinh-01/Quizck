@@ -16,6 +16,7 @@ from .info import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 EMAIL_USE_TLS = EMAIL_USE_TLS
 EMAIL_HOST = EMAIL_HOST
