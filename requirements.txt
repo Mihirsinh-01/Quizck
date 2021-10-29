@@ -9,3 +9,5 @@ requests_toolbelt
 firebase_admin
 shortuuid
 xlsxwriter
+gunicorn
+whitenoise
