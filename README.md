@@ -35,6 +35,7 @@ All the stats of previous games of the same quiz are displayed.
 ![image](https://snipboard.io/lsNUfG.jpg)
 
 ## Waiting Area
+Host can remove/kick any student by clicking on them.
 ![image](https://snipboard.io/e6SPXE.jpg)
 
 ## Teacher / Host Interface
