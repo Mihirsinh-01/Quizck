@@ -1,43 +1,50 @@
-# Developing Django on Repl.it
+# Quizck
 
-- Fork this template to get started
-- Simply hit run to start the server
-- The server will autoreload as needed. You don't need to restart the server manually.
+## You can access the webapp from
+<a href="https://quizck.herokuapp.com">Quizck</a>
 
-## Add your first view
+## About Quizck
+Quizck is an online quiz platform designed for users to play, compete and learn from the quiz created by the teachers/other user and compete with their friends along with learnings from the discussion session where the teacher can pause for a while after every question and explain the previous question.
 
-1. Create a file under `mysite` named `views.py` with the following contents:
+## Functionalities
+  <li>SignUp/Login for Quiz creators</li>
+  <li>Creating Quiz with particular marks and time</li>
+  <li>Saving Multiple quiz for future.</li>
+  <li>Removing some players(by only host)</li>
+  <li>Leaderboard & Discussion Session</li>
+  <li>Exporting CSV for Quiz Results</li>
+  <br>
+  
+## Homepage / Login(for host)
+![image](https://snipboard.io/LjS1Dp.jpg)
 
-```
-from django.http import HttpResponse
+## Signing Up(for creating host)
+Email Validation Using OTP
+![image](https://snipboard.io/LkynFG.jpg)
 
+## Dashboard
+Contains list of all quizzes which can be played multiple times in future.
+![image](https://snipboard.io/U5wgz6.jpg)
 
-def index(request):
-    return HttpResponse("Hello, world.")
-```
+## Creating Quiz
+Entering multiple questions for creating a quiz.
+![image](https://snipboard.io/pV3znY.jpg)
 
-2. Add a url pattern under `mysite/urls.py`. It should look like this:
+## Statistics
+All the stats of previous games of the same quiz are displayed.
+![image](https://snipboard.io/lsNUfG.jpg)
 
-```
-from django.contrib import admin
-from django.urls import path
-from . import views
+## Waiting Area
+![image](https://snipboard.io/e6SPXE.jpg)
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
-]
-```
+## Teacher / Host Interface
+![image](https://snipboard.io/hF0yaJ.jpg)
 
-## Shell
+## Student Interface
+![image](https://snipboard.io/dTpwHn.jpg)
 
-Django utilizes the shell for managing your site. For this click on the `?` in the lower-right corner and click "Workspace shortcuts" from there you can open a new shell pane. 
+## Downloading Result
+![image](https://snipboard.io/a7phkF.jpg)
 
-## Database
-
-By default this template utilizes the sqlite database engine. While this is fine for development it won't work with external users of your app as we don't persist changes to files when they happen outside the development environment. 
-
-We suggest bringing a database using an outside service. 
-
-See Django documentation on how to setup a database: https://docs.djangoproject.com/en/3.0/intro/tutorial02/
+# !!!  Play - Compete - Learn  !!!
 
