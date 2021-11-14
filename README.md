@@ -12,7 +12,7 @@ Quizck is an online quiz platform designed for users to play, compete and learn 
   <li>Saving Multiple quiz for future.</li>
   <li>Removing some players(by only host)</li>
   <li>Leaderboard & Discussion Session</li>
-  <li>Exporting CSV for Quiz Results</li>
+  <li>Exporting Excel File for Quiz Results</li>
   <br>
   
 ## Homepage / Login(for host)
